@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { X, Plus, Save, MapPin, Building2, Briefcase, Loader2, Home } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { X, Plus, MapPin, Building2, Briefcase, Loader2, Home } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
 
@@ -13,11 +13,7 @@ export default function SettingsModal({ onClose }) {
   const [newValue, setNewValue] = useState('');
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchSettings();
-  }, []);
-
-  const fetchSettings = async () => {
+  const fetchSettings = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('crm_settings')
@@ -41,7 +37,12 @@ export default function SettingsModal({ onClose }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchSettings();
+  }, [fetchSettings]);
 
   const addSetting = async (e) => {
     e.preventDefault();
@@ -73,6 +74,7 @@ export default function SettingsModal({ onClose }) {
       setNewValue('');
       toast.success('Added successfully');
     } catch (err) {
+      console.error(err);
       toast.error('An error occurred while saving.');
     }
   };
@@ -93,6 +95,7 @@ export default function SettingsModal({ onClose }) {
       
       toast.success('Removed successfully');
     } catch (err) {
+      console.error(err);
       toast.error('An error occurred while deleting.');
     }
   };

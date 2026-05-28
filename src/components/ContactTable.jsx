@@ -1,6 +1,6 @@
-import { Edit2, Trash2, Copy, MessageCircle, MapPin, MoreVertical, SearchX, UserPlus, Loader2, Building2 } from 'lucide-react';
+import { Edit2, Trash2, Copy, MessageCircle, Loader2, UserPlus, MoreVertical } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { format, isToday, isThisWeek, isThisMonth, isThisYear, parseISO } from 'date-fns';
+import { isToday, isThisWeek, isThisMonth, isThisYear, parseISO } from 'date-fns';
 
 export default function ContactTable({ contacts, loading, filters, onEdit, onDelete }) {
   
@@ -64,22 +64,17 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
     );
   }
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'New': return 'bg-[#eaf1fb] text-[#0a56d1]';
-      case 'Interested': return 'bg-[#f3e8fd] text-[#6b25a8]';
-      case 'Follow Up': return 'bg-[#fef7e0] text-[#b06000]';
-      case 'Converted': return 'bg-[#e6f4ea] text-[#137333]';
-      case 'Not Interested': return 'bg-[#f1f3f4] text-[#3c4043]';
-      default: return 'bg-[#f1f3f4] text-[#3c4043]';
-    }
-  };
-
   const getAvatarColor = (name) => {
-    const colors = ['bg-[#c2e7ff] text-[#001d35]', 'bg-[#ffdad6] text-[#410002]', 'bg-[#eaddff] text-[#21005d]', 'bg-[#c4eed0] text-[#00210e]', 'bg-[#ffdeb4] text-[#2e1500]'];
+    const colors = [
+      'bg-blue-500/20 text-blue-400',
+      'bg-purple-500/20 text-purple-400',
+      'bg-emerald-500/20 text-emerald-400',
+      'bg-orange-500/20 text-orange-400',
+      'bg-pink-500/20 text-pink-400',
+    ];
     let hash = 0;
-    for (let i = 0; i < (name || '').length; i++) {
-      hash = (name || '').charCodeAt(i) + ((hash << 5) - hash);
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
     return colors[Math.abs(hash) % colors.length];
   };

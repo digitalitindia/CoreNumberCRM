@@ -4,7 +4,7 @@ import ContactForm from './components/ContactForm';
 import ContactTable from './components/ContactTable';
 import Filters from './components/Filters';
 import BulkImportModal from './components/BulkImportModal';
-import { Users, PhoneCall, CheckCircle, Search, Plus, LogOut, Menu, ChevronLeft, ChevronRight, Upload } from 'lucide-react';
+import { Users, Search, Plus, LogOut, ChevronLeft, ChevronRight, Upload, Briefcase, Building2, MapPin } from 'lucide-react';
 import { Toaster, toast } from 'react-hot-toast';
 import Login from './components/Login';
 import SettingsModal from './components/SettingsModal';
@@ -106,13 +106,16 @@ export default function App() {
 
   useEffect(() => {
     if (!isLocked) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchContacts();
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchStats();
     }
   }, [isLocked, filters, page, fetchContacts]);
 
   // Reset page when filters change
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPage(0);
   }, [filters]);
 
@@ -124,7 +127,8 @@ export default function App() {
         toast.success('Contact deleted successfully');
         fetchContacts();
         fetchStats();
-      } catch (error) {
+      } catch (err) {
+        console.error(err);
         toast.error('Failed to delete contact');
       }
     }

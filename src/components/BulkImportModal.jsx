@@ -52,7 +52,7 @@ export default function BulkImportModal({ onClose, onImportComplete }) {
         }
 
         // Transform data to match database schema
-        const recordsToInsert = jsonData.map((row, index) => {
+        const recordsToInsert = jsonData.map((row) => {
           // Find the mobile number column (case-insensitive)
           const mobileKey = Object.keys(row).find(key => key.toLowerCase().includes('mobile'));
           let mobile = mobileKey ? String(row[mobileKey]).trim() : '';

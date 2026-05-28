@@ -11,15 +11,29 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
   const [availableCategories, setAvailableCategories] = useState([]);
   const [availableTowns, setAvailableTowns] = useState([]);
   
-  const [formData, setFormData] = useState({
-    mobile_number: '',
-    notes: '',
-    state: '',
-    city: '',
-    town: '',
-    category: '',
-    business_name: '',
-    person_name: ''
+  const [formData, setFormData] = useState(() => {
+    if (initialData) {
+      return {
+        mobile_number: initialData.mobile_number || '',
+        notes: initialData.notes || '',
+        state: initialData.state || '',
+        city: initialData.city || '',
+        town: initialData.town || '',
+        category: initialData.category || '',
+        business_name: initialData.business_name || '',
+        person_name: initialData.person_name || ''
+      };
+    }
+    return {
+      mobile_number: '',
+      notes: '',
+      state: '',
+      city: '',
+      town: '',
+      category: '',
+      business_name: '',
+      person_name: ''
+    };
   });
 
   useEffect(() => {
@@ -45,20 +59,7 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
     };
     
     loadSettings();
-
-    if (initialData) {
-      setFormData({
-        mobile_number: initialData.mobile_number || '',
-        notes: initialData.notes || '',
-        state: initialData.state || '',
-        city: initialData.city || '',
-        town: initialData.town || '',
-        category: initialData.category || '',
-        business_name: initialData.business_name || '',
-        person_name: initialData.person_name || ''
-      });
-    }
-  }, [initialData]);
+  }, []);
 
   // Debounced duplicate check
   const checkDuplicate = useCallback(async (number) => {
@@ -77,7 +78,7 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
         query = query.neq('id', initialData.id);
       }
 
-      const { data, error } = await query.single();
+      const { data } = await query.single();
       
       if (data) {
         const name = data.person_name || data.business_name || 'an existing contact';
@@ -85,7 +86,8 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
       } else {
         setDuplicateWarning(null);
       }
-    } catch (error) {
+    } catch (err) {
+      console.error(err);
       setDuplicateWarning(null);
     }
   }, [initialData]);

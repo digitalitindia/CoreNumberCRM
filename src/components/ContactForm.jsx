@@ -1,0 +1,338 @@
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '../lib/supabase';
+import { X, Save, AlertCircle } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+
+export default function ContactForm({ initialData, onClose, onSuccess }) {
+  const [loading, setLoading] = useState(false);
+  const [duplicateWarning, setDuplicateWarning] = useState(null);
+  const [availableStates, setAvailableStates] = useState([]);
+  const [availableCities, setAvailableCities] = useState([]);
+  const [availableCategories, setAvailableCategories] = useState([]);
+  
+  const [formData, setFormData] = useState({
+    mobile_number: '',
+    notes: '',
+    state: '',
+    city: '',
+    town: '',
+    category: '',
+    business_name: '',
+    person_name: ''
+  });
+
+  useEffect(() => {
+    // Load states, cities, categories from Supabase
+    const loadSettings = async () => {
+      try {
+        const { data, error } = await supabase.from('crm_settings').select('*');
+        if (!error && data) {
+          setAvailableStates(data.filter(s => s.setting_type === 'state').map(s => s.setting_value));
+          setAvailableCities(data.filter(s => s.setting_type === 'city').map(s => s.setting_value));
+          setAvailableCategories(data.filter(s => s.setting_type === 'category').map(s => s.setting_value));
+        } else {
+          // Fallback
+          setAvailableStates(['Madhya Pradesh', 'Gujarat']);
+          setAvailableCities(['Surat', 'Ahmedabad', 'Indore', 'Bhopal']);
+          setAvailableCategories(['IT', 'Doctor', 'Cafe', 'Car Dealer']);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    
+    loadSettings();
+
+    if (initialData) {
+      setFormData({
+        mobile_number: initialData.mobile_number || '',
+        notes: initialData.notes || '',
+        state: initialData.state || '',
+        city: initialData.city || '',
+        town: initialData.town || '',
+        category: initialData.category || '',
+        business_name: initialData.business_name || '',
+        person_name: initialData.person_name || ''
+      });
+    }
+  }, [initialData]);
+
+  // Debounced duplicate check
+  const checkDuplicate = useCallback(async (number) => {
+    if (!number || number.length < 10) {
+      setDuplicateWarning(null);
+      return;
+    }
+    
+    try {
+      let query = supabase
+        .from('contacts')
+        .select('person_name, business_name')
+        .eq('mobile_number', number);
+        
+      if (initialData?.id) {
+        query = query.neq('id', initialData.id);
+      }
+
+      const { data, error } = await query.single();
+      
+      if (data) {
+        const name = data.person_name || data.business_name || 'an existing contact';
+        setDuplicateWarning(`This number is already saved as "${name}".`);
+      } else {
+        setDuplicateWarning(null);
+      }
+    } catch (error) {
+      setDuplicateWarning(null);
+    }
+  }, [initialData]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    
+    if (name === 'mobile_number') {
+      const cleanValue = value.replace(/\D/g, '').slice(0, 10);
+      setFormData(prev => ({ ...prev, [name]: cleanValue }));
+      if (cleanValue.length === 10) {
+        checkDuplicate(cleanValue);
+      } else {
+        setDuplicateWarning(null);
+      }
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (formData.mobile_number.length !== 10) {
+      toast.error('Mobile number must be exactly 10 digits');
+      return;
+    }
+    setLoading(true);
+
+    try {
+      if (initialData) {
+        const { error } = await supabase
+          .from('contacts')
+          .update(formData)
+          .eq('id', initialData.id);
+        if (error) throw error;
+        toast.success('Contact updated');
+      } else {
+        const { error } = await supabase
+          .from('contacts')
+          .insert([formData]);
+        if (error) {
+          if (error.code === '23505') {
+            throw new Error('This mobile number already exists in your contacts.');
+          }
+          throw error;
+        }
+        toast.success('Contact added');
+      }
+      onSuccess();
+    } catch (error) {
+      console.error('Error saving contact:', error);
+      toast.error(error.message || 'Failed to save contact');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-full bg-slate-900 text-slate-200">
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700/50 bg-slate-900/50 backdrop-blur-md sticky top-0 z-10">
+        <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+          {initialData ? 'Edit Contact' : 'New Contact'}
+        </h2>
+        <button 
+          onClick={onClose}
+          className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Scrollable Form Content */}
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+        <form id="contact-form" onSubmit={handleSubmit} className="space-y-4 max-w-3xl mx-auto">
+          
+          <div className="bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50 space-y-3 shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+            <div>
+              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+                Mobile Number *
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">
+                  +91
+                </span>
+                <input
+                  type="tel"
+                  name="mobile_number"
+                  required
+                  autoFocus
+                  value={formData.mobile_number}
+                  onChange={handleChange}
+                  placeholder="9876543210"
+                  className={`w-full pl-10 pr-3 py-2 bg-slate-900 border ${duplicateWarning ? 'border-red-500 focus:border-red-400 focus:ring-red-500/30' : 'border-slate-600 focus:border-purple-400 focus:ring-purple-500/30'} rounded-xl focus:ring-2 outline-none transition-all text-base tracking-wider placeholder:text-slate-500 text-white font-medium`}
+                />
+              </div>
+              {duplicateWarning && (
+                <div className="mt-2.5 flex items-start gap-2 text-red-400 text-sm font-medium bg-red-500/10 p-2.5 rounded-lg border border-red-500/20">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <p>{duplicateWarning}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+                  Business Name
+                </label>
+                <input
+                  type="text"
+                  name="business_name"
+                  value={formData.business_name}
+                  onChange={handleChange}
+                  placeholder="e.g. Reliance Industries"
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-white font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+                  Person Name
+                </label>
+                <input
+                  type="text"
+                  name="person_name"
+                  value={formData.person_name}
+                  onChange={handleChange}
+                  placeholder="e.g. Rahul Sharma"
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-white font-medium"
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+                Category
+              </label>
+              <input
+                type="text"
+                name="category"
+                list="categories-list"
+                value={formData.category}
+                onChange={handleChange}
+                placeholder="e.g. IT, Doctor"
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-white font-medium"
+              />
+            </div>
+          </div>
+
+          <div className="bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50 space-y-3 shadow-sm relative overflow-hidden mb-6">
+            <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+                  State
+                </label>
+                <input
+                  type="text"
+                  name="state"
+                  list="states-list"
+                  value={formData.state}
+                  onChange={handleChange}
+                  placeholder="State"
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-white font-medium"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+                  City
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  list="cities-list"
+                  value={formData.city}
+                  onChange={handleChange}
+                  placeholder="City"
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-white font-medium"
+                />
+              </div>
+              
+              <div className="sm:col-span-1">
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+                  Town / Area
+                </label>
+                <input
+                  type="text"
+                  name="town"
+                  value={formData.town}
+                  onChange={handleChange}
+                  placeholder="e.g. Andheri East"
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-white font-medium"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+                Notes
+              </label>
+              <textarea
+                name="notes"
+                value={formData.notes}
+                onChange={handleChange}
+                placeholder="Any additional details..."
+                rows="2"
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all resize-none placeholder:text-slate-500 text-white font-medium custom-scrollbar"
+              ></textarea>
+            </div>
+          </div>
+
+          <datalist id="states-list">
+            {availableStates.map(state => <option key={state} value={state} />)}
+          </datalist>
+          <datalist id="cities-list">
+            {availableCities.map(city => <option key={city} value={city} />)}
+          </datalist>
+          <datalist id="categories-list">
+            {availableCategories.map(cat => <option key={cat} value={cat} />)}
+          </datalist>
+        </form>
+      </div>
+
+      {/* Footer Actions */}
+      <div className="p-4 md:p-6 border-t border-slate-700/50 bg-slate-900/80 backdrop-blur-md sticky bottom-0 z-10 flex justify-end gap-3">
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-6 py-2.5 text-slate-300 font-medium hover:bg-slate-800 rounded-xl transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          form="contact-form"
+          disabled={loading || !!duplicateWarning}
+          className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-8 py-2.5 rounded-xl font-medium transition-all shadow-[0_0_15px_rgba(168,85,247,0.3)] disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
+        >
+          {loading ? (
+            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+          ) : (
+            <>
+              <Save className="w-5 h-5" />
+              <span>{initialData ? 'Update' : 'Save'}</span>
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+}

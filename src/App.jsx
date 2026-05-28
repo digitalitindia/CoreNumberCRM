@@ -145,6 +145,13 @@ export default function App() {
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 18) return 'Good Afternoon';
+    return 'Good Evening';
+  };
+
   return (
     <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans selection:bg-purple-500/30">
       <Toaster position="top-center" toastOptions={{ style: { background: '#1e293b', color: '#fff', border: '1px solid #334155' } }} />
@@ -158,13 +165,16 @@ export default function App() {
       {/* Premium Glass Header */}
       <header className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between gap-4 bg-[#0f172a]/70 backdrop-blur-xl border-b border-white/10 shadow-lg">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-tr from-blue-500 to-purple-600 text-white p-2 rounded-xl shadow-lg shadow-purple-500/20">
+          <div className="flex items-center gap-3 group">
+            <div className="bg-gradient-to-tr from-blue-500 to-purple-600 text-white p-2.5 rounded-xl shadow-[0_0_15px_rgba(168,85,247,0.4)] group-hover:shadow-[0_0_25px_rgba(168,85,247,0.7)] transition-all duration-300 transform group-hover:scale-105">
               <Users className="w-6 h-6" />
             </div>
-            <h1 className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 tracking-wide">
-              CoreNumber CRM
-            </h1>
+            <div className="flex flex-col">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{getGreeting()}</span>
+              <h1 className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 tracking-wide">
+                CoreNumber CRM
+              </h1>
+            </div>
           </div>
         </div>
 
@@ -244,26 +254,70 @@ export default function App() {
           
           {/* Dashboard Metrics Cards (High Contrast) */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-1 md:px-0 mb-6 mt-2 md:mt-0">
-            <div onClick={() => setFilters({...filters, status: 'all'})} className="bg-slate-800 border-2 border-slate-600 hover:border-blue-400 cursor-pointer transition-all p-5 md:p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-xl group">
+            <div onClick={() => setFilters({...filters, status: 'all'})} className="animate-fade-in-up bg-slate-800/80 backdrop-blur-md border-2 border-slate-600 hover:border-blue-500 cursor-pointer transition-all p-5 md:p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-xl group hover:shadow-[0_0_30px_rgba(59,130,246,0.2)]">
               <span className="text-4xl md:text-5xl font-black text-white group-hover:scale-110 transition-transform drop-shadow-md">{stats.total}</span>
-              <span className="text-sm md:text-base font-bold text-slate-200 mt-2 uppercase tracking-widest">Total Contacts</span>
+              <span className="text-sm md:text-base font-bold text-blue-400 mt-2 uppercase tracking-widest">Total Contacts</span>
             </div>
             
             <div onClick={() => {
               setEditingContact(null);
               setIsFormOpen(true);
-            }} className="bg-slate-800 border-2 border-slate-600 hover:border-purple-400 cursor-pointer transition-all p-5 md:p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-xl group">
+            }} className="animate-fade-in-up animate-delay-100 bg-slate-800/80 backdrop-blur-md border-2 border-slate-600 hover:border-purple-500 cursor-pointer transition-all p-5 md:p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-xl group hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]">
               <div className="bg-gradient-to-tr from-blue-500 to-purple-600 p-3 rounded-full mb-2 shadow-[0_0_15px_rgba(168,85,247,0.5)] group-hover:scale-110 transition-transform border border-white/20">
                 <Plus className="w-7 h-7 text-white font-bold" />
               </div>
               <span className="text-sm md:text-base font-bold text-slate-200 mt-1 uppercase tracking-widest">Add New Contact</span>
             </div>
 
-            <div onClick={() => setIsBulkImportOpen(true)} className="bg-slate-800 border-2 border-slate-600 hover:border-green-400 cursor-pointer transition-all p-5 md:p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-xl group">
+            <div onClick={() => setIsBulkImportOpen(true)} className="animate-fade-in-up animate-delay-200 bg-slate-800/80 backdrop-blur-md border-2 border-slate-600 hover:border-emerald-500 cursor-pointer transition-all p-5 md:p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-xl group hover:shadow-[0_0_30px_rgba(16,185,129,0.2)]">
               <div className="bg-gradient-to-tr from-emerald-500 to-teal-600 p-3 rounded-full mb-2 shadow-[0_0_15px_rgba(16,185,129,0.5)] group-hover:scale-110 transition-transform border border-white/20">
                 <Upload className="w-7 h-7 text-white font-bold" />
               </div>
               <span className="text-sm md:text-base font-bold text-slate-200 mt-1 uppercase tracking-widest">Bulk Import Excel</span>
+            </div>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="bg-slate-800/40 backdrop-blur-sm p-4 lg:p-6 rounded-2xl border border-slate-700/50 shadow-lg relative overflow-hidden group hover:border-blue-500/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] transition-all">
+              <div className="absolute top-0 left-0 w-1 h-full bg-blue-500 group-hover:w-1.5 transition-all"></div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 bg-blue-500/10 rounded-lg group-hover:bg-blue-500/20 transition-colors">
+                  <Users className="w-5 h-5 lg:w-6 lg:h-6 text-blue-400" />
+                </div>
+                <h3 className="text-slate-400 text-xs lg:text-sm font-semibold uppercase tracking-wider">Total Contacts</h3>
+              </div>
+              <p className="text-3xl lg:text-4xl font-bold text-slate-200 mt-2">{stats.totalContacts}</p>
+            </div>
+            <div className="bg-slate-800/40 backdrop-blur-sm p-4 lg:p-6 rounded-2xl border border-slate-700/50 shadow-lg relative overflow-hidden group hover:border-purple-500/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.15)] transition-all">
+              <div className="absolute top-0 left-0 w-1 h-full bg-purple-500 group-hover:w-1.5 transition-all"></div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 bg-purple-500/10 rounded-lg group-hover:bg-purple-500/20 transition-colors">
+                  <Briefcase className="w-5 h-5 lg:w-6 lg:h-6 text-purple-400" />
+                </div>
+                <h3 className="text-slate-400 text-xs lg:text-sm font-semibold uppercase tracking-wider">Categories</h3>
+              </div>
+              <p className="text-3xl lg:text-4xl font-bold text-slate-200 mt-2">{stats.totalCategories}</p>
+            </div>
+            <div className="bg-slate-800/40 backdrop-blur-sm p-4 lg:p-6 rounded-2xl border border-slate-700/50 shadow-lg relative overflow-hidden group hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all">
+              <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500 group-hover:w-1.5 transition-all"></div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-emerald-500/20 transition-colors">
+                  <Building2 className="w-5 h-5 lg:w-6 lg:h-6 text-emerald-400" />
+                </div>
+                <h3 className="text-slate-400 text-xs lg:text-sm font-semibold uppercase tracking-wider">Cities</h3>
+              </div>
+              <p className="text-3xl lg:text-4xl font-bold text-slate-200 mt-2">{stats.totalCities}</p>
+            </div>
+            <div className="bg-slate-800/40 backdrop-blur-sm p-4 lg:p-6 rounded-2xl border border-slate-700/50 shadow-lg relative overflow-hidden group hover:border-orange-500/50 hover:shadow-[0_0_20px_rgba(249,115,22,0.15)] transition-all">
+              <div className="absolute top-0 left-0 w-1 h-full bg-orange-500 group-hover:w-1.5 transition-all"></div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 bg-orange-500/10 rounded-lg group-hover:bg-orange-500/20 transition-colors">
+                  <MapPin className="w-5 h-5 lg:w-6 lg:h-6 text-orange-400" />
+                </div>
+                <h3 className="text-slate-400 text-xs lg:text-sm font-semibold uppercase tracking-wider">States</h3>
+              </div>
+              <p className="text-3xl lg:text-4xl font-bold text-slate-200 mt-2">{stats.totalStates}</p>
             </div>
           </div>
 

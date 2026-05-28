@@ -91,7 +91,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
         {filteredContacts.map((contact) => {
           const displayName = contact.person_name || contact.business_name || 'Unknown Contact';
           return (
-            <div key={contact.id} className="p-3 active:bg-slate-800 transition-colors border-b border-slate-700/50 last:border-0 hover:bg-slate-800/30">
+            <div key={contact.id} className="animate-fade-in-up p-3 active:bg-slate-800 transition-colors border-b border-slate-700/50 last:border-0 hover:bg-slate-800/30">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-slate-600 flex flex-col items-center justify-center shrink-0">
                   <span className="text-sm font-bold text-slate-200">
@@ -139,10 +139,10 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-700/50">
-            {filteredContacts.map((contact) => {
+            {filteredContacts.map((contact, index) => {
               const displayName = contact.person_name || contact.business_name || 'Unknown Contact';
               return (
-                <tr key={contact.id} className="hover:bg-slate-800/80 transition-colors group cursor-default">
+                <tr key={contact.id} className="animate-fade-in-up hover:bg-slate-800/80 transition-colors group cursor-default" style={{ animationDelay: `${index * 50}ms` }}>
                   <td className="px-3 py-3">
                     <div className="flex items-center gap-2">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${getAvatarColor(displayName)} shadow-lg`}>

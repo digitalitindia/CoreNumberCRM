@@ -43,7 +43,6 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-[#444746]">
       <div className="flex flex-col items-center justify-center p-12 text-slate-300">
         <Loader2 className="w-8 h-8 animate-spin text-blue-500 mb-4" />
         <p className="text-lg font-medium text-white">Loading contacts...</p>

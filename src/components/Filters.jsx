@@ -7,19 +7,27 @@ import { supabase } from '../lib/supabase';
 export default function Filters({ filters, setFilters, contacts, isSidebar = false }) {
   const [showFilters, setShowFilters] = useState(isSidebar); // Always show in sidebar
   const [categories, setCategories] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [towns, setTowns] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const { data, error } = await supabase
           .from('crm_settings')
-          .select('setting_value')
-          .eq('setting_type', 'category');
+          .select('setting_type, setting_value');
           
         if (!error && data) {
-          setCategories(data.map(d => d.setting_value));
+          setCategories(data.filter(d => d.setting_type === 'category').map(d => d.setting_value));
+          setStates(data.filter(d => d.setting_type === 'state').map(d => d.setting_value));
+          setCities(data.filter(d => d.setting_type === 'city').map(d => d.setting_value));
+          setTowns(data.filter(d => d.setting_type === 'town').map(d => d.setting_value));
         } else {
           setCategories(['IT', 'Doctor', 'Cafe', 'Car Dealer']); // Fallback
+          setStates(['Madhya Pradesh', 'Gujarat']);
+          setCities(['Surat', 'Ahmedabad', 'Indore', 'Bhopal']);
+          setTowns(['Andheri East', 'Bandra']);
         }
       } catch (err) {
         console.error(err);
@@ -73,34 +81,64 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
         
         {/* State Filter */}
         <div>
-          <input
-            type="text"
-            placeholder="Filter by State..."
-            value={filters.state}
-            onChange={(e) => setFilters({...filters, state: e.target.value})}
-            className="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-sm outline-none focus:border-purple-500 text-slate-200 placeholder:text-slate-500 font-medium hover:border-slate-500 transition-colors"
-          />
+          <div className="relative">
+            <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <select
+              value={filters.state}
+              onChange={(e) => setFilters({...filters, state: e.target.value})}
+              className="w-full pl-9 pr-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-sm outline-none focus:border-purple-500 text-slate-200 appearance-none cursor-pointer font-medium hover:border-slate-500 transition-colors"
+            >
+              <option value="">All States</option>
+              {states.map(state => (
+                <option key={state} value={state}>{state}</option>
+              ))}
+            </select>
+          </div>
         </div>
         
         {/* City Filter */}
         <div>
-          <input
-            type="text"
-            placeholder="Filter by City / Town..."
-            value={filters.city}
-            onChange={(e) => setFilters({...filters, city: e.target.value})}
-            className="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-sm outline-none focus:border-purple-500 text-slate-200 placeholder:text-slate-500 font-medium hover:border-slate-500 transition-colors"
-          />
+          <div className="relative">
+            <Building2 className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <select
+              value={filters.city}
+              onChange={(e) => setFilters({...filters, city: e.target.value})}
+              className="w-full pl-9 pr-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-sm outline-none focus:border-purple-500 text-slate-200 appearance-none cursor-pointer font-medium hover:border-slate-500 transition-colors"
+            >
+              <option value="">All Cities</option>
+              {cities.map(city => (
+                <option key={city} value={city}>{city}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Town Filter */}
+        <div>
+          <div className="relative">
+            <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <select
+              value={filters.town}
+              onChange={(e) => setFilters({...filters, town: e.target.value})}
+              className="w-full pl-9 pr-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-sm outline-none focus:border-purple-500 text-slate-200 appearance-none cursor-pointer font-medium hover:border-slate-500 transition-colors"
+            >
+              <option value="">All Towns</option>
+              {towns.map(town => (
+                <option key={town} value={town}>{town}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Clear Filters Button */}
-        {(filters.state || filters.city || filters.category) && (
+        {(filters.state || filters.city || filters.town || filters.category) && (
           <button 
             onClick={() => setFilters({
               ...filters,
               timeRange: 'all',
               state: '',
               city: '',
+              town: '',
               category: '',
               startDate: '',
               endDate: ''

@@ -9,6 +9,7 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
   const [availableStates, setAvailableStates] = useState([]);
   const [availableCities, setAvailableCities] = useState([]);
   const [availableCategories, setAvailableCategories] = useState([]);
+  const [availableTowns, setAvailableTowns] = useState([]);
   
   const [formData, setFormData] = useState({
     mobile_number: '',
@@ -30,11 +31,13 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
           setAvailableStates(data.filter(s => s.setting_type === 'state').map(s => s.setting_value));
           setAvailableCities(data.filter(s => s.setting_type === 'city').map(s => s.setting_value));
           setAvailableCategories(data.filter(s => s.setting_type === 'category').map(s => s.setting_value));
+          setAvailableTowns(data.filter(s => s.setting_type === 'town').map(s => s.setting_value));
         } else {
           // Fallback
           setAvailableStates(['Madhya Pradesh', 'Gujarat']);
           setAvailableCities(['Surat', 'Ahmedabad', 'Indore', 'Bhopal']);
           setAvailableCategories(['IT', 'Doctor', 'Cafe', 'Car Dealer']);
+          setAvailableTowns(['Andheri East', 'Bandra']);
         }
       } catch (err) {
         console.error(err);
@@ -221,15 +224,17 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
               <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
                 Category
               </label>
-              <input
-                type="text"
+              <select
                 name="category"
-                list="categories-list"
                 value={formData.category}
                 onChange={handleChange}
-                placeholder="e.g. IT, Doctor"
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-white font-medium"
-              />
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all text-white font-medium appearance-none cursor-pointer"
+              >
+                <option value="" disabled className="text-slate-500">Select Category</option>
+                {availableCategories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
             </div>
           </div>
 
@@ -240,44 +245,51 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
                 <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
                   State
                 </label>
-                <input
-                  type="text"
+                <select
                   name="state"
-                  list="states-list"
                   value={formData.state}
                   onChange={handleChange}
-                  placeholder="State"
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-white font-medium"
-                />
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all text-white font-medium appearance-none cursor-pointer"
+                >
+                  <option value="" disabled className="text-slate-500">Select State</option>
+                  {availableStates.map(state => (
+                    <option key={state} value={state}>{state}</option>
+                  ))}
+                </select>
               </div>
               
               <div>
                 <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
                   City
                 </label>
-                <input
-                  type="text"
+                <select
                   name="city"
-                  list="cities-list"
                   value={formData.city}
                   onChange={handleChange}
-                  placeholder="City"
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-white font-medium"
-                />
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all text-white font-medium appearance-none cursor-pointer"
+                >
+                  <option value="" disabled className="text-slate-500">Select City</option>
+                  {availableCities.map(city => (
+                    <option key={city} value={city}>{city}</option>
+                  ))}
+                </select>
               </div>
               
               <div className="sm:col-span-1">
                 <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
                   Town / Area
                 </label>
-                <input
-                  type="text"
+                <select
                   name="town"
                   value={formData.town}
                   onChange={handleChange}
-                  placeholder="e.g. Andheri East"
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-white font-medium"
-                />
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all text-white font-medium appearance-none cursor-pointer"
+                >
+                  <option value="" disabled className="text-slate-500">Select Town</option>
+                  {availableTowns.map(town => (
+                    <option key={town} value={town}>{town}</option>
+                  ))}
+                </select>
               </div>
             </div>
 

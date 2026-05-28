@@ -87,36 +87,38 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
   return (
     <>
       {/* Mobile View */}
-      <div className="md:hidden divide-y divide-slate-100">
+      <div className="md:hidden divide-y divide-slate-700/50">
         {filteredContacts.map((contact) => {
-          const displayName = contact.person_name || contact.business_name || 'Unknown';
+          const displayName = contact.person_name || contact.business_name || 'Unknown Contact';
           return (
-            <div key={contact.id} className="py-2.5 px-1 hover:bg-[#f8fafd] transition-colors border-b border-slate-100 last:border-0">
+            <div key={contact.id} className="p-3 active:bg-slate-800 transition-colors border-b border-slate-700/50 last:border-0 hover:bg-slate-800/30">
               <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium shrink-0 ${getAvatarColor(displayName)}`}>
-                  {displayName.charAt(0).toUpperCase()}
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-slate-600 flex flex-col items-center justify-center shrink-0">
+                  <span className="text-sm font-bold text-slate-200">
+                    {displayName.charAt(0).toUpperCase()}
+                  </span>
                 </div>
-                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-medium text-[#1f1f1f] text-[15px] truncate max-w-[150px]">
+                    <h3 className="font-semibold text-white text-[15px] truncate max-w-[150px]">
                       {displayName}
                     </h3>
-                    <span className="text-[13px] font-medium text-[#444746]">+91 {contact.mobile_number}</span>
+                    <span className="text-[13px] font-bold text-slate-300 bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-700">+91 {contact.mobile_number}</span>
                   </div>
-                  <div className="flex items-center justify-between mt-0.5">
-                    <div className="flex items-center gap-1.5 text-[12px] text-[#727775]">
+                  <div className="flex items-center justify-between mt-1">
+                    <div className="flex items-center gap-2 text-[12px] text-slate-400">
                       {contact.business_name && contact.person_name && (
-                        <span className="truncate max-w-[150px]">{contact.business_name}</span>
+                        <span className="truncate max-w-[150px] font-medium">{contact.business_name}</span>
                       )}
                       {contact.category && (
-                        <span className="text-[9px] font-bold tracking-wider px-1.5 py-0.5 bg-purple-500/20 text-purple-400 rounded">
+                        <span className="text-[10px] font-bold tracking-wider px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded border border-purple-500/30">
                           {contact.category}
                         </span>
                       )}
                     </div>
                   </div>
                 </div>
-                <button className="p-1.5 text-[#444746] hover:bg-slate-200 rounded-full shrink-0" onClick={() => onEdit(contact)}>
+                <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-full shrink-0 transition-colors" onClick={() => onEdit(contact)}>
                   <MoreVertical className="w-4 h-4" />
                 </button>
               </div>
@@ -138,10 +140,10 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
           </thead>
           <tbody className="divide-y divide-slate-700/50">
             {filteredContacts.map((contact) => {
-              const displayName = contact.person_name || contact.business_name || 'Unknown';
+              const displayName = contact.person_name || contact.business_name || 'Unknown Contact';
               return (
-                <tr key={contact.id} className="hover:bg-slate-800/50 transition-colors group">
-                  <td className="px-3 py-2">
+                <tr key={contact.id} className="hover:bg-slate-800/80 transition-colors group cursor-default">
+                  <td className="px-3 py-3">
                     <div className="flex items-center gap-2">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${getAvatarColor(displayName)} shadow-lg`}>
                         {displayName.charAt(0).toUpperCase()}

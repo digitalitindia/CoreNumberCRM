@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
-import { X, Save, AlertCircle } from 'lucide-react';
+import { X, Save, AlertCircle, Loader2, CheckCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 export default function ContactForm({ initialData, onClose, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [duplicateWarning, setDuplicateWarning] = useState(null);
+  const [checkingDuplicate, setCheckingDuplicate] = useState(false);
   const [availableStates, setAvailableStates] = useState([]);
   const [availableCities, setAvailableCities] = useState([]);
   const [availableCategories, setAvailableCategories] = useState([]);
@@ -65,9 +66,11 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
   const checkDuplicate = useCallback(async (number) => {
     if (!number || number.length < 10) {
       setDuplicateWarning(null);
+      setCheckingDuplicate(false);
       return;
     }
     
+    setCheckingDuplicate(true);
     try {
       let query = supabase
         .from('contacts')
@@ -89,6 +92,8 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
     } catch (err) {
       console.error(err);
       setDuplicateWarning(null);
+    } finally {
+      setCheckingDuplicate(false);
     }
   }, [initialData]);
 
@@ -182,8 +187,19 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
                   value={formData.mobile_number}
                   onChange={handleChange}
                   placeholder="9876543210"
-                  className={`w-full pl-10 pr-3 py-2 bg-slate-900 border ${duplicateWarning ? 'border-red-500 focus:border-red-400 focus:ring-red-500/30' : 'border-slate-600 focus:border-purple-400 focus:ring-purple-500/30'} rounded-xl focus:ring-2 outline-none transition-all text-base tracking-wider placeholder:text-slate-500 text-white font-medium`}
+                  className={`w-full pl-10 pr-10 py-2 bg-slate-900 border ${duplicateWarning ? 'border-red-500 focus:border-red-400 focus:ring-red-500/30' : formData.mobile_number.length === 10 && !checkingDuplicate ? 'border-emerald-500 focus:border-emerald-400 focus:ring-emerald-500/30' : 'border-slate-600 focus:border-purple-400 focus:ring-purple-500/30'} rounded-xl focus:ring-2 outline-none transition-all text-base tracking-wider placeholder:text-slate-500 text-white font-medium`}
                 />
+                
+                {/* Visual Feedback Icons */}
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
+                  {checkingDuplicate && <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />}
+                  {!checkingDuplicate && formData.mobile_number.length === 10 && !duplicateWarning && (
+                    <CheckCircle className="w-5 h-5 text-emerald-400" />
+                  )}
+                  {!checkingDuplicate && formData.mobile_number.length === 10 && duplicateWarning && (
+                    <AlertCircle className="w-5 h-5 text-red-500" />
+                  )}
+                </div>
               </div>
               {duplicateWarning && (
                 <div className="mt-2.5 flex items-start gap-2 text-red-400 text-sm font-medium bg-red-500/10 p-2.5 rounded-lg border border-red-500/20">

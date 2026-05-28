@@ -254,7 +254,7 @@ export default function App() {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 md:ml-72 p-3 sm:p-4 md:p-6 w-full max-w-7xl mx-auto">
+        <main className="flex-1 md:ml-72 p-3 sm:p-4 md:p-6 w-full">
           
           {/* Dashboard Metrics Cards (High Contrast) */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-1 md:px-0 mb-6 mt-2 md:mt-0">

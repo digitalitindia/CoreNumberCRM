@@ -108,7 +108,7 @@ export default function App() {
     if (!isLocked) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchContacts();
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       fetchStats();
     }
   }, [isLocked, filters, page, fetchContacts]);

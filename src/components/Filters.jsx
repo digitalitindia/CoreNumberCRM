@@ -10,6 +10,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [towns, setTowns] = useState([]);
+  const [allSettings, setAllSettings] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -19,10 +20,9 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
           .select('setting_type, setting_value');
           
         if (!error && data) {
+          setAllSettings(data);
           setCategories(data.filter(d => d.setting_type === 'category').map(d => d.setting_value));
           setStates(data.filter(d => d.setting_type === 'state').map(d => d.setting_value));
-          setCities(data.filter(d => d.setting_type === 'city').map(d => d.setting_value));
-          setTowns(data.filter(d => d.setting_type === 'town').map(d => d.setting_value));
         } else {
           setCategories(['IT', 'Doctor', 'Cafe', 'Car Dealer']); // Fallback
           setStates(['Madhya Pradesh', 'Gujarat']);
@@ -36,6 +36,26 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
     
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    if (!allSettings.length) return;
+    
+    // Filter cities based on selected state
+    const filteredCities = filters.state
+      ? allSettings.filter(s => s.setting_type === `city_${filters.state}` || s.setting_type === 'city').map(s => s.setting_value)
+      : allSettings.filter(s => s.setting_type.startsWith('city')).map(s => s.setting_value);
+      
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCities([...new Set(filteredCities)]);
+
+    // Filter towns based on selected city
+    const filteredTowns = filters.city
+      ? allSettings.filter(s => s.setting_type === `town_${filters.city}` || s.setting_type === 'town').map(s => s.setting_value)
+      : allSettings.filter(s => s.setting_type.startsWith('town')).map(s => s.setting_value);
+      
+     
+    setTowns([...new Set(filteredTowns)]);
+  }, [filters.state, filters.city, allSettings]);
 
   const handleExport = () => {
     // Export only what matches the visible data

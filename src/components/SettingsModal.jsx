@@ -9,6 +9,8 @@ export default function SettingsModal({ onClose }) {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [towns, setTowns] = useState([]);
+  const [selectedParentState, setSelectedParentState] = useState('');
+  const [selectedParentCity, setSelectedParentCity] = useState('');
   
   const [newValue, setNewValue] = useState('');
   const [loading, setLoading] = useState(true);
@@ -30,8 +32,8 @@ export default function SettingsModal({ onClose }) {
 
       setCategories(data.filter(s => s.setting_type === 'category'));
       setStates(data.filter(s => s.setting_type === 'state'));
-      setCities(data.filter(s => s.setting_type === 'city'));
-      setTowns(data.filter(s => s.setting_type === 'town'));
+      setCities(data.filter(s => s.setting_type === 'city' || s.setting_type.startsWith('city_')));
+      setTowns(data.filter(s => s.setting_type === 'town' || s.setting_type.startsWith('town_')));
     } catch (err) {
       console.error(err);
     } finally {
@@ -49,6 +51,20 @@ export default function SettingsModal({ onClose }) {
     const val = newValue.trim();
     if (!val) return;
 
+    if (activeTab === 'cities' && !selectedParentState) {
+      toast.error('Please select a State first');
+      return;
+    }
+    if (activeTab === 'towns' && !selectedParentCity) {
+      toast.error('Please select a City first');
+      return;
+    }
+
+    const settingType = activeTab === 'categories' ? 'category' : 
+                        activeTab === 'states' ? 'state' : 
+                        activeTab === 'cities' ? `city_${selectedParentState}` : 
+                        `town_${selectedParentCity}`;
+
     const currentList = activeTab === 'categories' ? categories : 
                         activeTab === 'states' ? states : 
                         activeTab === 'towns' ? towns : cities;
@@ -61,7 +77,7 @@ export default function SettingsModal({ onClose }) {
     try {
       const { data, error } = await supabase
         .from('crm_settings')
-        .insert([{ setting_type: activeTab, setting_value: val }])
+        .insert([{ setting_type: settingType, setting_value: val }])
         .select();
 
       if (error) throw error;
@@ -152,27 +168,49 @@ export default function SettingsModal({ onClose }) {
             </div>
 
             {/* Input Form */}
-            <form onSubmit={addSetting} className="flex gap-2 mb-4">
-              <input 
-                type="text" 
-                value={newValue} 
-                onChange={e => setNewValue(e.target.value)} 
-                placeholder={`Add new ${activeTab.slice(0, -1)}...`} 
-                className={`flex-1 px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl outline-none text-white focus:ring-2 transition-all ${
-                  activeTab === 'categories' ? 'focus:border-purple-500 focus:ring-purple-500/20' : 
-                  activeTab === 'states' ? 'focus:border-blue-500 focus:ring-blue-500/20' : 
-                  activeTab === 'towns' ? 'focus:border-orange-500 focus:ring-orange-500/20' : 
-                  'focus:border-emerald-500 focus:ring-emerald-500/20'
-                }`}
-              />
-              <button type="submit" className={`px-6 py-3 rounded-xl font-bold transition-colors flex items-center gap-2 text-white shadow-lg ${
-                activeTab === 'categories' ? 'bg-purple-600 hover:bg-purple-500' : 
-                activeTab === 'states' ? 'bg-blue-600 hover:bg-blue-500' : 
-                activeTab === 'towns' ? 'bg-orange-600 hover:bg-orange-500' : 
-                'bg-emerald-600 hover:bg-emerald-500'
-              }`}>
-                <Plus className="w-5 h-5" /> Add
-              </button>
+            <form onSubmit={addSetting} className="flex flex-col gap-3 mb-4">
+              {activeTab === 'cities' && (
+                <select
+                  value={selectedParentState}
+                  onChange={e => setSelectedParentState(e.target.value)}
+                  className="px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl outline-none text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                >
+                  <option value="">-- Select State --</option>
+                  {states.map(s => <option key={s.id} value={s.setting_value}>{s.setting_value}</option>)}
+                </select>
+              )}
+              {activeTab === 'towns' && (
+                <select
+                  value={selectedParentCity}
+                  onChange={e => setSelectedParentCity(e.target.value)}
+                  className="px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl outline-none text-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                >
+                  <option value="">-- Select City --</option>
+                  {cities.map(c => <option key={c.id} value={c.setting_value}>{c.setting_value} {c.setting_type.startsWith('city_') ? `(${c.setting_type.replace('city_', '')})` : ''}</option>)}
+                </select>
+              )}
+              <div className="flex gap-2">
+                <input 
+                  type="text" 
+                  value={newValue} 
+                  onChange={e => setNewValue(e.target.value)} 
+                  placeholder={`Add new ${activeTab.slice(0, -1)}...`} 
+                  className={`flex-1 px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl outline-none text-white focus:ring-2 transition-all ${
+                    activeTab === 'categories' ? 'focus:border-purple-500 focus:ring-purple-500/20' : 
+                    activeTab === 'states' ? 'focus:border-blue-500 focus:ring-blue-500/20' : 
+                    activeTab === 'towns' ? 'focus:border-orange-500 focus:ring-orange-500/20' : 
+                    'focus:border-emerald-500 focus:ring-emerald-500/20'
+                  }`}
+                />
+                <button type="submit" className={`px-6 py-3 rounded-xl font-bold transition-colors flex items-center gap-2 text-white shadow-lg ${
+                  activeTab === 'categories' ? 'bg-purple-600 hover:bg-purple-500' : 
+                  activeTab === 'states' ? 'bg-blue-600 hover:bg-blue-500' : 
+                  activeTab === 'towns' ? 'bg-orange-600 hover:bg-orange-500' : 
+                  'bg-emerald-600 hover:bg-emerald-500'
+                }`}>
+                  <Plus className="w-5 h-5" /> Add
+                </button>
+              </div>
             </form>
 
             {/* List View */}
@@ -180,7 +218,11 @@ export default function SettingsModal({ onClose }) {
               <div className="space-y-2">
                 {currentList.map((item) => (
                   <div key={item.id} className="flex items-center justify-between bg-slate-900 border border-slate-700 px-4 py-3 rounded-lg hover:border-slate-500 transition-colors group">
-                    <span className="text-slate-200 font-medium">{item.setting_value}</span>
+                    <span className="text-slate-200 font-medium">
+                      {item.setting_value}
+                      {item.setting_type.startsWith('city_') && <span className="text-slate-500 ml-2 text-xs">({item.setting_type.replace('city_', '')})</span>}
+                      {item.setting_type.startsWith('town_') && <span className="text-slate-500 ml-2 text-xs">({item.setting_type.replace('town_', '')})</span>}
+                    </span>
                     <button onClick={() => removeSetting(item.id, item.setting_type)} type="button" className="text-slate-500 hover:text-red-400 p-1.5 rounded-md hover:bg-red-500/10 transition-colors opacity-0 group-hover:opacity-100">
                       <X className="w-4 h-4" />
                     </button>

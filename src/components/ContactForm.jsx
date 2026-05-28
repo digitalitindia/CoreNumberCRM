@@ -11,6 +11,7 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
   const [availableCities, setAvailableCities] = useState([]);
   const [availableCategories, setAvailableCategories] = useState([]);
   const [availableTowns, setAvailableTowns] = useState([]);
+  const [allSettings, setAllSettings] = useState([]);
   
   const [formData, setFormData] = useState(() => {
     if (initialData) {
@@ -43,10 +44,9 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
       try {
         const { data, error } = await supabase.from('crm_settings').select('*');
         if (!error && data) {
+          setAllSettings(data);
           setAvailableStates(data.filter(s => s.setting_type === 'state').map(s => s.setting_value));
-          setAvailableCities(data.filter(s => s.setting_type === 'city').map(s => s.setting_value));
           setAvailableCategories(data.filter(s => s.setting_type === 'category').map(s => s.setting_value));
-          setAvailableTowns(data.filter(s => s.setting_type === 'town').map(s => s.setting_value));
         } else {
           // Fallback
           setAvailableStates(['Madhya Pradesh', 'Gujarat']);
@@ -61,6 +61,26 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
     
     loadSettings();
   }, []);
+
+  useEffect(() => {
+    if (!allSettings.length) return;
+    
+    // Filter cities based on selected state
+    const cities = formData.state 
+      ? allSettings.filter(s => s.setting_type === `city_${formData.state}` || s.setting_type === 'city').map(s => s.setting_value)
+      : allSettings.filter(s => s.setting_type.startsWith('city')).map(s => s.setting_value);
+      
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setAvailableCities([...new Set(cities)]);
+
+    // Filter towns based on selected city
+    const towns = formData.city
+      ? allSettings.filter(s => s.setting_type === `town_${formData.city}` || s.setting_type === 'town').map(s => s.setting_value)
+      : allSettings.filter(s => s.setting_type.startsWith('town')).map(s => s.setting_value);
+      
+     
+    setAvailableTowns([...new Set(towns)]);
+  }, [formData.state, formData.city, allSettings]);
 
   // Debounced duplicate check
   const checkDuplicate = useCallback(async (number) => {

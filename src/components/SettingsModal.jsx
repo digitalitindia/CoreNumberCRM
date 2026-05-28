@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { X, Plus, MapPin, Building2, Briefcase, Loader2, Home } from 'lucide-react';
+import { X, Plus, MapPin, Building2, Briefcase, Loader2, Home, Edit2, Check } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
 
@@ -11,7 +11,9 @@ export default function SettingsModal({ onClose }) {
   const [towns, setTowns] = useState([]);
   const [selectedParentState, setSelectedParentState] = useState('');
   const [selectedParentCity, setSelectedParentCity] = useState('');
-  
+  const [editingId, setEditingId] = useState(null);
+  const [editValue, setEditValue] = useState('');
+
   const [newValue, setNewValue] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -92,6 +94,64 @@ export default function SettingsModal({ onClose }) {
     } catch (err) {
       console.error(err);
       toast.error('An error occurred while saving.');
+    }
+  };
+
+  const startEdit = (item) => {
+    setEditingId(item.id);
+    setEditValue(item.setting_value);
+  };
+
+  const saveEdit = async (item) => {
+    const newVal = editValue.trim();
+    if (!newVal || newVal === item.setting_value) {
+      setEditingId(null);
+      return;
+    }
+
+    const currentList = activeTab === 'categories' ? categories : 
+                        activeTab === 'states' ? states : 
+                        activeTab === 'towns' ? towns : cities;
+
+    if (currentList.some(i => i.setting_value === newVal && i.id !== item.id)) {
+      toast.error(`Value already exists in ${activeTab}`);
+      return;
+    }
+
+    try {
+      // 1. Update the setting itself
+      const { error } = await supabase.from('crm_settings').update({ setting_value: newVal }).eq('id', item.id);
+      if (error) throw error;
+
+      // 2. Cascade contacts
+      let cascadeCol = '';
+      if (activeTab === 'categories') cascadeCol = 'category';
+      if (activeTab === 'states') cascadeCol = 'state';
+      if (activeTab === 'cities') cascadeCol = 'city';
+      if (activeTab === 'towns') cascadeCol = 'town';
+      
+      if (cascadeCol) {
+        await supabase.from('contacts').update({ [cascadeCol]: newVal }).eq(cascadeCol, item.setting_value);
+      }
+
+      // 3. Cascade nested settings
+      if (activeTab === 'states') {
+         const oldType = `city_${item.setting_value}`;
+         const newType = `city_${newVal}`;
+         await supabase.from('crm_settings').update({ setting_type: newType }).eq('setting_type', oldType);
+      }
+      if (activeTab === 'cities') {
+         const oldType = `town_${item.setting_value}`;
+         const newType = `town_${newVal}`;
+         await supabase.from('crm_settings').update({ setting_type: newType }).eq('setting_type', oldType);
+      }
+
+      await fetchSettings();
+      setEditingId(null);
+      toast.success('Updated successfully');
+    } catch (err) {
+      console.error(err);
+      toast.error('An error occurred while updating.');
     }
   };
 
@@ -218,14 +278,43 @@ export default function SettingsModal({ onClose }) {
               <div className="space-y-2">
                 {currentList.map((item) => (
                   <div key={item.id} className="flex items-center justify-between bg-slate-900 border border-slate-700 px-4 py-3 rounded-lg hover:border-slate-500 transition-colors group">
-                    <span className="text-slate-200 font-medium">
-                      {item.setting_value}
-                      {item.setting_type.startsWith('city_') && <span className="text-slate-500 ml-2 text-xs">({item.setting_type.replace('city_', '')})</span>}
-                      {item.setting_type.startsWith('town_') && <span className="text-slate-500 ml-2 text-xs">({item.setting_type.replace('town_', '')})</span>}
-                    </span>
-                    <button onClick={() => removeSetting(item.id, item.setting_type)} type="button" className="text-slate-500 hover:text-red-400 p-1.5 rounded-md hover:bg-red-500/10 transition-colors opacity-0 group-hover:opacity-100">
-                      <X className="w-4 h-4" />
-                    </button>
+                    {editingId === item.id ? (
+                      <div className="flex-1 flex items-center gap-2 mr-2">
+                        <input
+                          type="text"
+                          value={editValue}
+                          onChange={e => setEditValue(e.target.value)}
+                          className="flex-1 bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white text-sm outline-none focus:border-blue-500"
+                          autoFocus
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') { e.preventDefault(); saveEdit(item); }
+                            if (e.key === 'Escape') setEditingId(null);
+                          }}
+                        />
+                        <button onClick={() => saveEdit(item)} className="text-emerald-400 hover:bg-emerald-500/20 p-1.5 rounded-md transition-colors">
+                          <Check className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => setEditingId(null)} className="text-slate-400 hover:bg-slate-700 p-1.5 rounded-md transition-colors">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <span className="text-slate-200 font-medium">
+                          {item.setting_value}
+                          {item.setting_type.startsWith('city_') && <span className="text-slate-500 ml-2 text-xs">({item.setting_type.replace('city_', '')})</span>}
+                          {item.setting_type.startsWith('town_') && <span className="text-slate-500 ml-2 text-xs">({item.setting_type.replace('town_', '')})</span>}
+                        </span>
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button onClick={() => startEdit(item)} type="button" className="text-slate-500 hover:text-blue-400 p-1.5 rounded-md hover:bg-blue-500/10 transition-colors">
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          <button onClick={() => removeSetting(item.id, item.setting_type)} type="button" className="text-slate-500 hover:text-red-400 p-1.5 rounded-md hover:bg-red-500/10 transition-colors">
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 ))}
                 {currentList.length === 0 && <div className="text-center py-8 text-slate-500 italic">No {activeTab} added yet</div>}

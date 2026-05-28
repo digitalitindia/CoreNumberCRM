@@ -89,12 +89,16 @@ export default function BulkImportModal({ onClose, onImportComplete }) {
           return;
         }
 
-        // Upsert data and ignore duplicates (so existing DB records won't be overwritten, and we don't crash)
-        const { error } = await supabase
-          .from('contacts')
-          .upsert(finalRecordsToInsert, { onConflict: 'mobile_number', ignoreDuplicates: true });
+        // Chunk insertion to handle massive bulk uploads (e.g., 50,000+ rows) without crashing Supabase
+        const CHUNK_SIZE = 500;
+        for (let i = 0; i < finalRecordsToInsert.length; i += CHUNK_SIZE) {
+          const chunk = finalRecordsToInsert.slice(i, i + CHUNK_SIZE);
+          const { error } = await supabase
+            .from('contacts')
+            .upsert(chunk, { onConflict: 'mobile_number', ignoreDuplicates: true });
 
-        if (error) throw error;
+          if (error) throw error;
+        }
 
         toast.success(`Successfully imported ${finalRecordsToInsert.length} unique records! (Duplicates skipped)`);
         onImportComplete();

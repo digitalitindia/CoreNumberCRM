@@ -4,12 +4,12 @@ import ContactForm from './components/ContactForm';
 import ContactTable from './components/ContactTable';
 import Filters from './components/Filters';
 import BulkImportModal from './components/BulkImportModal';
-import { Plus, Search, LogOut, Users, Settings, Upload, Download, Briefcase, Building2, MapPin, AlertCircle, ChevronLeft, ChevronRight, Phone, CheckCircle, Database } from 'lucide-react';
+import { Plus, Search, LogOut, Users, Settings, Upload, Download, AlertCircle, ChevronLeft, ChevronRight, Phone, CheckCircle, Database } from 'lucide-react';
 import { toast, Toaster } from 'react-hot-toast';
 import * as XLSX from 'xlsx';
 import { isToday, isThisWeek, isThisMonth, isThisYear, parseISO } from 'date-fns';
 import Login from './components/Login';
-import SettingsModal from './components/SettingsModal';
+import SettingsPage from './components/SettingsPage';
 import { startOfDay, startOfWeek, startOfMonth, startOfYear, endOfDay, endOfWeek, endOfMonth, endOfYear } from 'date-fns';
 
 const ITEMS_PER_PAGE = 50;
@@ -268,12 +268,7 @@ export default function App() {
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good Morning';
-    if (hour < 18) return 'Good Afternoon';
-    return 'Good Evening';
-  };
+
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-indigo-500/30">
@@ -357,12 +352,12 @@ export default function App() {
           </div>
 
           <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 mb-4">
-            <Filters filters={filters} setFilters={setFilters} contacts={contacts} isSidebar={true} />
+            <Filters filters={filters} setFilters={setFilters} isSidebar={true} />
           </div>
 
           <div 
             onClick={() => setIsSettingsOpen(true)}
-            className="flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-colors hover:bg-slate-800 hover:text-white text-slate-400 font-medium mt-auto shrink-0 mb-20"
+            className={`flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-colors font-medium mt-auto shrink-0 mb-20 ${isSettingsOpen ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800 hover:text-white text-slate-400'}`}
           >
             <div className="flex items-center gap-3">
               <Settings className="w-4 h-4" />
@@ -372,9 +367,13 @@ export default function App() {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 md:ml-64 p-3 sm:p-6 md:p-8 w-full">
-          {/* Detailed Stats Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <main className="flex-1 md:ml-64 p-3 sm:p-6 md:p-8 w-full max-w-[100vw] overflow-hidden">
+          {isSettingsOpen ? (
+            <SettingsPage currentUser={currentUser} onClose={() => setIsSettingsOpen(false)} />
+          ) : (
+            <>
+              {/* Detailed Stats Cards */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-indigo-300 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-default">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Leads</h3>
@@ -431,7 +430,7 @@ export default function App() {
           </div>
 
           <div className="md:hidden mb-6">
-            <Filters filters={filters} setFilters={setFilters} contacts={contacts} />
+            <Filters filters={filters} setFilters={setFilters} />
           </div>
 
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -495,11 +494,13 @@ export default function App() {
               </div>
             )}
           </div>
+            </>
+          )}
         </main>
       </div>
 
       {/* Floating Action Button */}
-      {!isFormOpen && (
+      {!isFormOpen && !isSettingsOpen && (
         <button
           onClick={() => {
             setEditingContact(null);
@@ -551,15 +552,6 @@ export default function App() {
           onClose={() => setIsBulkImportOpen(false)}
           onImportComplete={fetchContacts}
         />
-      )}
-
-      {/* Settings Drawer */}
-      {isSettingsOpen && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex justify-end animate-in fade-in duration-200">
-          <div className="w-full md:w-[450px] lg:w-[500px] h-full bg-slate-50 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300 border-l border-slate-200">
-            <SettingsModal onClose={() => setIsSettingsOpen(false)} />
-          </div>
-        </div>
       )}
 
     </div>

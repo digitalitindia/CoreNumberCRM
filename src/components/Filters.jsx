@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Search, Download, Calendar, Filter, X, Briefcase, MapPin, Building2 } from 'lucide-react';
-import * as XLSX from 'xlsx';
-import { format } from 'date-fns';
+import { Search, Calendar, Filter, X, Briefcase, MapPin, Building2 } from 'lucide-react';
+
 import { supabase } from '../lib/supabase';
 
-export default function Filters({ filters, setFilters, contacts, isSidebar = false }) {
+export default function Filters({ filters, setFilters, isSidebar = false }) {
   const [showFilters, setShowFilters] = useState(isSidebar); // Always show in sidebar
   const [categories, setCategories] = useState([]);
   const [states, setStates] = useState([]);
@@ -57,25 +56,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
     setTowns([...new Set(filteredTowns)]);
   }, [filters.state, filters.city, allSettings]);
 
-  const handleExport = () => {
-    // Export only what matches the visible data
-    const exportData = contacts.map(c => ({
-      'Person Name': c.person_name || '',
-      'Business Name': c.business_name || '',
-      'Mobile Number': c.mobile_number,
-      'Category': c.category || '',
-      'State': c.state,
-      'City': c.city,
-      'Town': c.town,
-      'Notes': c.notes,
-      'Added On': c.created_at ? format(new Date(c.created_at), 'dd MMM yyyy HH:mm') : ''
-    }));
 
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Contacts");
-    XLSX.writeFile(workbook, `Contacts_Export_${format(new Date(), 'yyyyMMdd')}.xlsx`);
-  };
 
   if (isSidebar) {
     return (

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Edit2, Trash2, Copy, MessageCircle, Loader2, MoreVertical, ArrowUpDown, PhoneCall, Calendar, FileText } from 'lucide-react';
+import { Edit2, Trash2, Copy, MessageCircle, Loader2, MoreVertical, ArrowUpDown, PhoneCall, Calendar, FileText, Search } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { isToday, isThisWeek, isThisMonth, isThisYear, parseISO, format } from 'date-fns';
 

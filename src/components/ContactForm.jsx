@@ -73,7 +73,7 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
     };
     
     loadSettings();
-  }, []);
+  }, [initialData]);
 
   useEffect(() => {
     if (!allSettings.length) return;

@@ -121,6 +121,16 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
 
   return (
     <>
+      {contacts.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-20 px-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-slate-200/60 mb-6 text-center shadow-sm">
+          <div className="w-20 h-20 bg-indigo-50 text-indigo-300 rounded-full flex items-center justify-center mb-4 shadow-inner border border-indigo-100">
+            <Search className="w-10 h-10" />
+          </div>
+          <h3 className="text-xl font-bold text-slate-800 mb-2">No contacts found</h3>
+          <p className="text-slate-500 max-w-sm mb-6">It looks like there are no contacts matching your current filters or search criteria.</p>
+        </div>
+      )}
+
       {/* Mobile View */}
       <div className="md:hidden divide-y divide-slate-200">
         {sortedContacts.map((contact, index) => {

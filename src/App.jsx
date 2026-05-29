@@ -41,7 +41,7 @@ export default function App() {
   const fetchStats = async () => {
     try {
       const { count: total } = await supabase.from('contacts').select('*', { count: 'exact', head: true });
-      const { count: leads } = await supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('status', 'lead');
+      const { count: leads } = await supabase.from('contacts').select('*', { count: 'exact', head: true }).or('status.eq.lead,status.is.null');
       const { count: followUps } = await supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('status', 'follow_up');
       const { count: converted } = await supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('status', 'converted');
       
@@ -136,7 +136,11 @@ export default function App() {
       let query = supabase.from('contacts').select('*', { count: 'exact' });
 
       if (filters.status && filters.status !== 'all') {
-        query = query.eq('status', filters.status);
+        if (filters.status === 'lead') {
+          query = query.or('status.eq.lead,status.is.null');
+        } else {
+          query = query.eq('status', filters.status);
+        }
       }
       
       if (filters.timeRange !== 'all') {
@@ -434,21 +438,43 @@ export default function App() {
                 <span className="text-sm text-slate-600 text-center md:text-left">
                   Showing <span className="font-medium text-slate-900">{page * ITEMS_PER_PAGE + 1}</span> to <span className="font-medium text-slate-900">{Math.min((page + 1) * ITEMS_PER_PAGE, totalCount)}</span> of <span className="font-medium text-slate-900">{totalCount}</span> results
                 </span>
-                <div className="flex gap-2">
-                  <button 
-                    onClick={() => setPage(p => Math.max(0, p - 1))}
-                    disabled={page === 0}
-                    className="p-2 bg-white rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-colors"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-                  <button 
-                    onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
-                    disabled={page >= totalPages - 1}
-                    className="p-2 bg-white rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-colors"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 mr-2 md:mr-4 border-r border-slate-200 pr-2 md:pr-4">
+                    <span className="text-sm text-slate-500 hidden sm:inline">Go to page:</span>
+                    <span className="text-sm text-slate-500 sm:hidden">Go:</span>
+                    <input 
+                      type="number" 
+                      min="1" 
+                      max={totalPages}
+                      defaultValue={page + 1}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          let val = parseInt(e.target.value);
+                          if (isNaN(val)) return;
+                          if (val < 1) val = 1;
+                          if (val > totalPages) val = totalPages;
+                          setPage(val - 1);
+                        }
+                      }}
+                      className="w-16 px-2 py-1.5 text-sm border border-slate-200 rounded-lg outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-white"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => setPage(p => Math.max(0, p - 1))}
+                      disabled={page === 0}
+                      className="p-2 bg-white rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-colors"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                      disabled={page >= totalPages - 1}
+                      className="p-2 bg-white rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-colors"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

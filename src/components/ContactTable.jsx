@@ -45,7 +45,12 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
         if (date < start || date > end) return false;
       }
     }
-    if (filters.status && filters.status !== 'all' && contact.status !== filters.status) return false;
+    
+    if (filters.status && filters.status !== 'all') {
+      const contactStatus = contact.status || 'lead';
+      if (contactStatus !== filters.status) return false;
+    }
+
     if (filters.state && !contact.state?.toLowerCase().includes(filters.state.toLowerCase())) return false;
     if (filters.city && !contact.city?.toLowerCase().includes(filters.city.toLowerCase())) return false;
     if (filters.town && !contact.town?.toLowerCase().includes(filters.town.toLowerCase())) return false;

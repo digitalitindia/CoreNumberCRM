@@ -340,13 +340,6 @@ export default function App() {
 
         {/* Main Content Area */}
         <main className="flex-1 md:ml-64 p-3 sm:p-6 md:p-8 w-full">
-          {isSettingsOpen ? (
-            <div className="h-[calc(100vh-140px)] bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative">
-              <SettingsModal onClose={() => setIsSettingsOpen(false)} />
-            </div>
-          ) : (
-            <>
-          
           {/* Detailed Stats Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-indigo-200 transition-colors">
@@ -451,8 +444,6 @@ export default function App() {
               </div>
             )}
           </div>
-          </>
-          )}
         </main>
       </div>
 
@@ -511,6 +502,14 @@ export default function App() {
         />
       )}
 
+      {/* Settings Drawer */}
+      {isSettingsOpen && (
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex justify-end animate-in fade-in duration-200">
+          <div className="w-full md:w-[450px] lg:w-[500px] h-full bg-slate-50 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300 border-l border-slate-200">
+            <SettingsModal onClose={() => setIsSettingsOpen(false)} />
+          </div>
+        </div>
+      )}
 
     </div>
   );

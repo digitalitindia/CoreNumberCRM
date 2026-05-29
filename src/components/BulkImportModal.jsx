@@ -138,11 +138,11 @@ export default function BulkImportModal({ onClose, onImportComplete }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-50/80 backdrop-blur-sm">
-      <div className="bg-slate-50 border border-slate-200 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex justify-end animate-in fade-in duration-200">
+      <div className="w-full md:w-[450px] lg:w-[500px] h-full bg-slate-50 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300 border-l border-slate-200">
         
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-800 bg-white/50">
+        <div className="flex items-center justify-between p-5 border-b border-slate-200 bg-white/50 backdrop-blur-md sticky top-0 z-10">
           <div className="flex items-center gap-3">
             <div className="bg-green-500/20 p-2 rounded-lg">
               <FileSpreadsheet className="w-6 h-6 text-green-400" />
@@ -158,7 +158,7 @@ export default function BulkImportModal({ onClose, onImportComplete }) {
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="flex-1 overflow-y-auto p-5 space-y-6">
           <div className="mb-6">
             <h3 className="text-sm font-bold text-slate-800 mb-2">Step 1: Download Template</h3>
             <p className="text-xs text-slate-500 mb-3">Download the Excel template to ensure your data is formatted correctly.</p>

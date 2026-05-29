@@ -15,7 +15,8 @@ import { startOfDay, startOfWeek, startOfMonth, startOfYear, endOfDay, endOfWeek
 const ITEMS_PER_PAGE = 50;
 
 export default function App() {
-  const [isLocked, setIsLocked] = useState(false);
+  const [isLocked, setIsLocked] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -190,6 +191,17 @@ export default function App() {
   }, [filters, page]);
 
   useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.email) {
+        setCurrentUser(session.user.email);
+        setIsLocked(false);
+      }
+    };
+    checkSession();
+  }, []);
+
+  useEffect(() => {
     if (!isLocked) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchContacts();
@@ -219,7 +231,9 @@ export default function App() {
     }
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setCurrentUser(null);
     setIsLocked(true);
   };
 
@@ -247,7 +261,7 @@ export default function App() {
     return (
       <>
         <Toaster position="top-center" />
-        <Login onLogin={() => setIsLocked(false)} />
+        <Login onLogin={(email) => { setCurrentUser(email); setIsLocked(false); }} />
       </>
     );
   }
@@ -293,6 +307,12 @@ export default function App() {
         </div>
 
         <div className="flex items-center gap-2">
+          {currentUser && (
+            <div className="hidden md:flex flex-col items-end mr-4">
+              <span className="text-xs font-bold text-slate-800">{currentUser}</span>
+              <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full mt-0.5">SUPER ADMIN</span>
+            </div>
+          )}
           <button 
             onClick={() => setIsSettingsOpen(true)}
             className="flex items-center justify-center p-2 text-slate-800 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors md:hidden"

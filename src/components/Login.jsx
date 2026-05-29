@@ -5,7 +5,6 @@ import { Mail, Lock, Shield } from 'lucide-react';
 
 export default function Login({ onLogin }) {
   const [loading, setLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -14,23 +13,18 @@ export default function Login({ onLogin }) {
     setLoading(true);
 
     try {
-      if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
-        if (error) throw error;
-        toast.success('Registration successful! Please check your email or sign in.');
-        setIsSignUp(false);
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) throw error;
-        toast.success('Logged in successfully!');
-        if (onLogin) onLogin();
+      const allowedEmails = ['rajeshrshiv@gmail.com', 'infodigitalitindia@gmail.com'];
+      if (!allowedEmails.includes(email.toLowerCase())) {
+        throw new Error('Access Denied. You do not have Super Admin permissions to access this CRM.');
       }
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+      toast.success('Logged in successfully!');
+      if (onLogin) onLogin(email);
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -51,10 +45,10 @@ export default function Login({ onLogin }) {
             <Shield className="w-8 h-8 text-slate-900" />
           </div>
           <h1 className="text-2xl font-bold text-slate-900 mb-2 tracking-wide">
-            {isSignUp ? 'Create Account' : 'Welcome Back'}
+            Welcome Back
           </h1>
           <p className="text-slate-500 text-sm">
-            {isSignUp ? 'Sign up to secure your CRM data' : 'Sign in to access your CRM'}
+            Sign in to access your CRM
           </p>
         </div>
 
@@ -97,16 +91,8 @@ export default function Login({ onLogin }) {
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
               ) : (
-                isSignUp ? 'Sign Up' : 'Sign In'
+                'Sign In'
               )}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-slate-500 hover:text-slate-900 text-sm font-medium transition-colors"
-            >
-              {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
             </button>
           </div>
         </form>

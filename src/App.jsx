@@ -464,10 +464,10 @@ export default function App() {
         </div>
       </nav>
 
-      {/* Contact Form Modal (Premium Glass) */}
+      {/* Contact Form Drawer (Right Side) */}
       {isFormOpen && (
-        <div className="fixed inset-0 bg-slate-50/80 backdrop-blur-sm z-50 flex items-center justify-center p-0 md:p-4 animate-in fade-in duration-200">
-          <div className="w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-slate-50 border border-slate-200/50 md:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 md:slide-in-from-bottom-8 duration-300">
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex justify-end animate-in fade-in duration-200">
+          <div className="w-full md:w-[450px] lg:w-[500px] h-full bg-slate-50 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300 border-l border-slate-200">
             <ContactForm 
               initialData={editingContact}
               onClose={() => {

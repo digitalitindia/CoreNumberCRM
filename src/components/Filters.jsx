@@ -239,14 +239,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
             className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${showFilters ? 'bg-purple-500 text-slate-900 border-2 border-blue-400 shadow-md' : 'bg-white text-slate-800 hover:bg-slate-100 border border-slate-200 shadow-sm hover:border-slate-400'}`}
           >
             <Filter className="w-4 h-4" />
-            <span>Filters</span>
-          </button>
-          <button 
-            onClick={handleExport}
-            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 text-slate-900 border-2 border-green-500 hover:bg-green-500 hover:border-green-400 rounded-xl text-sm font-bold transition-all shadow-[0_0_15px_rgba(34,197,94,0.3)]"
-          >
-            <Download className="w-4 h-4" />
-            <span>Export View</span>
+            <span>{showFilters ? 'Hide Filters' : 'Show Filters'}</span>
           </button>
         </div>
       </div>

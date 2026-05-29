@@ -255,12 +255,12 @@ export default function App() {
       {/* Premium Clean Header */}
       <header className="sticky top-0 z-20 px-6 py-4 flex items-center justify-between gap-4 bg-white/80 backdrop-blur-xl border-b border-slate-200">
         <div className="flex items-center gap-4">
-          <button onClick={handleGoHome} className="flex items-center gap-3 group text-left cursor-pointer outline-none rounded-xl focus:ring-2 focus:ring-indigo-500/30">
-            <div className="bg-indigo-600 p-2.5 rounded-lg shadow-sm text-white group-hover:bg-indigo-700 transition-colors">
+          <button onClick={handleGoHome} className="flex items-center gap-2 md:gap-3 group text-left cursor-pointer outline-none rounded-xl focus:ring-2 focus:ring-indigo-500/30">
+            <div className="bg-indigo-600 p-2 md:p-2.5 rounded-lg shadow-sm text-white group-hover:bg-indigo-700 transition-colors">
               <Users className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-xl font-bold text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors">
+              <h1 className="text-lg md:text-xl font-bold text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors">
                 CoreNumber CRM
               </h1>
             </div>
@@ -401,7 +401,7 @@ export default function App() {
                 <Upload className="w-4 h-4" />
                 <span>Import</span>
               </button>
-              <button onClick={() => { setEditingContact(null); setIsFormOpen(true); }} className="flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm flex-1 md:flex-none">
+              <button onClick={() => { setEditingContact(null); setIsFormOpen(true); }} className="hidden md:flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
                 <Plus className="w-4 h-4" />
                 <span>Add Contact</span>
               </button>
@@ -428,8 +428,8 @@ export default function App() {
             
             {/* Pagination Controls */}
             {!loading && totalCount > 0 && (
-              <div className="flex items-center justify-between px-6 py-4 bg-slate-50 border-t border-slate-200">
-                <span className="text-sm text-slate-600">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4 px-4 py-4 md:px-6 bg-slate-50 border-t border-slate-200 pb-24 md:pb-4">
+                <span className="text-sm text-slate-600 text-center md:text-left">
                   Showing <span className="font-medium text-slate-900">{page * ITEMS_PER_PAGE + 1}</span> to <span className="font-medium text-slate-900">{Math.min((page + 1) * ITEMS_PER_PAGE, totalCount)}</span> of <span className="font-medium text-slate-900">{totalCount}</span> results
                 </span>
                 <div className="flex gap-2">

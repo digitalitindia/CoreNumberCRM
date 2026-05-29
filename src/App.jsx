@@ -355,7 +355,7 @@ export default function App() {
         <main className="flex-1 md:ml-64 p-3 sm:p-6 md:p-8 w-full">
           {/* Detailed Stats Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-indigo-200 transition-colors">
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-indigo-300 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-default">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Leads</h3>
                 <div className="p-1 bg-indigo-50 text-indigo-600 rounded">
@@ -365,7 +365,7 @@ export default function App() {
               <p className="text-2xl font-bold text-slate-900">{stats.leads || 0}</p>
             </div>
             
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-yellow-200 transition-colors">
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-yellow-300 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-default">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Follow-ups</h3>
                 <div className="p-1 bg-yellow-50 text-yellow-600 rounded">
@@ -375,7 +375,7 @@ export default function App() {
               <p className="text-2xl font-bold text-slate-900">{stats.followUps || 0}</p>
             </div>
 
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-green-200 transition-colors">
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-green-300 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-default">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Converted</h3>
                 <div className="p-1 bg-green-50 text-green-600 rounded">
@@ -385,7 +385,7 @@ export default function App() {
               <p className="text-2xl font-bold text-slate-900">{stats.converted || 0}</p>
             </div>
 
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-blue-200 transition-colors">
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-blue-300 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-default">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Database</h3>
                 <div className="p-1 bg-blue-50 text-blue-600 rounded">
@@ -406,10 +406,6 @@ export default function App() {
               <button onClick={() => setIsBulkImportOpen(true)} className="flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors shadow-sm flex-1 md:flex-none">
                 <Upload className="w-4 h-4" />
                 <span>Import</span>
-              </button>
-              <button onClick={() => { setEditingContact(null); setIsFormOpen(true); }} className="hidden md:flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
-                <Plus className="w-4 h-4" />
-                <span>Add Contact</span>
               </button>
             </div>
           </div>

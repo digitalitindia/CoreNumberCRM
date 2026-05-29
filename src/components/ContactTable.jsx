@@ -233,7 +233,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
               const displayName = contact.person_name || contact.business_name || 'Unknown Contact';
               const serialNo = page * itemsPerPage + index + 1;
               return (
-                <tr key={contact.id} className="animate-fade-in-up hover:bg-slate-50 transition-colors group cursor-default" style={{ animationDelay: `${index * 50}ms` }}>
+                <tr key={contact.id} className="animate-fade-in-up hover:bg-indigo-50/40 transition-colors group cursor-default" style={{ animationDelay: `${index * 50}ms` }}>
                   <td className="px-3 py-2 whitespace-nowrap text-center">
                     <span className="text-sm font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
                       {serialNo}

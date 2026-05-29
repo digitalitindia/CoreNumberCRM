@@ -85,15 +85,15 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
         {/* Category Filter */}
         <div>
           <div className="relative">
-            <Briefcase className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <Briefcase className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <select
               value={filters.category}
               onChange={(e) => setFilters({...filters, category: e.target.value})}
-              className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-800 appearance-none cursor-pointer font-medium hover:border-slate-300 transition-colors"
+              className="w-full pl-9 pr-4 py-3 bg-slate-800/50 border border-slate-700 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-200 appearance-none cursor-pointer font-medium hover:border-slate-600 transition-colors"
             >
               <option value="">All Categories</option>
               {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
+                <option key={cat} value={cat} className="bg-slate-800 text-slate-200">{cat}</option>
               ))}
             </select>
           </div>
@@ -102,18 +102,18 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
         {/* Time Range Filter */}
         <div>
           <div className="relative">
-            <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <select
               value={filters.timeRange}
               onChange={(e) => setFilters({...filters, timeRange: e.target.value})}
-              className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-800 appearance-none cursor-pointer font-medium hover:border-slate-300 transition-colors"
+              className="w-full pl-9 pr-4 py-3 bg-slate-800/50 border border-slate-700 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-200 appearance-none cursor-pointer font-medium hover:border-slate-600 transition-colors"
             >
-              <option value="all">All Time</option>
-              <option value="today">Today</option>
-              <option value="week">This Week</option>
-              <option value="month">This Month</option>
-              <option value="year">This Year</option>
-              <option value="custom">Custom Range</option>
+              <option value="all" className="bg-slate-800 text-slate-200">All Time</option>
+              <option value="today" className="bg-slate-800 text-slate-200">Today</option>
+              <option value="week" className="bg-slate-800 text-slate-200">This Week</option>
+              <option value="month" className="bg-slate-800 text-slate-200">This Month</option>
+              <option value="year" className="bg-slate-800 text-slate-200">This Year</option>
+              <option value="custom" className="bg-slate-800 text-slate-200">Custom Range</option>
             </select>
           </div>
         </div>
@@ -145,17 +145,17 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
         {/* Pipeline Status Filter */}
         <div>
           <div className="relative">
-            <Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <select
               value={filters.status}
               onChange={(e) => setFilters({...filters, status: e.target.value})}
-              className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-800 appearance-none cursor-pointer font-bold hover:border-slate-300 transition-colors"
+              className="w-full pl-9 pr-4 py-3 bg-slate-800/50 border border-slate-700 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-200 appearance-none cursor-pointer font-bold hover:border-slate-600 transition-colors"
             >
-              <option value="all">All Statuses</option>
-              <option value="lead">🔵 New Lead</option>
-              <option value="follow_up">🟡 Follow-up</option>
-              <option value="converted">🟢 Converted</option>
-              <option value="not_interested">🔴 Not Interested</option>
+              <option value="all" className="bg-slate-800 text-slate-200">All Statuses</option>
+              <option value="lead" className="bg-slate-800 text-slate-200">🔵 New Lead</option>
+              <option value="follow_up" className="bg-slate-800 text-slate-200">🟡 Follow-up</option>
+              <option value="converted" className="bg-slate-800 text-slate-200">🟢 Converted</option>
+              <option value="not_interested" className="bg-slate-800 text-slate-200">🔴 Not Interested</option>
             </select>
           </div>
         </div>
@@ -163,15 +163,15 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
         {/* State Filter */}
         <div>
           <div className="relative">
-            <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <select
               value={filters.state}
               onChange={(e) => setFilters({...filters, state: e.target.value})}
-              className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-800 appearance-none cursor-pointer font-medium hover:border-slate-300 transition-colors"
+              className="w-full pl-9 pr-4 py-3 bg-slate-800/50 border border-slate-700 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-200 appearance-none cursor-pointer font-medium hover:border-slate-600 transition-colors"
             >
-              <option value="">All States</option>
+              <option value="" className="bg-slate-800 text-slate-200">All States</option>
               {states.map(state => (
-                <option key={state} value={state}>{state}</option>
+                <option key={state} value={state} className="bg-slate-800 text-slate-200">{state}</option>
               ))}
             </select>
           </div>
@@ -180,15 +180,15 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
         {/* City Filter */}
         <div>
           <div className="relative">
-            <Building2 className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <Building2 className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <select
               value={filters.city}
               onChange={(e) => setFilters({...filters, city: e.target.value})}
-              className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-800 appearance-none cursor-pointer font-medium hover:border-slate-300 transition-colors"
+              className="w-full pl-9 pr-4 py-3 bg-slate-800/50 border border-slate-700 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-200 appearance-none cursor-pointer font-medium hover:border-slate-600 transition-colors"
             >
-              <option value="">All Cities</option>
+              <option value="" className="bg-slate-800 text-slate-200">All Cities</option>
               {cities.map(city => (
-                <option key={city} value={city}>{city}</option>
+                <option key={city} value={city} className="bg-slate-800 text-slate-200">{city}</option>
               ))}
             </select>
           </div>
@@ -197,15 +197,15 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
         {/* Town Filter */}
         <div>
           <div className="relative">
-            <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <select
               value={filters.town}
               onChange={(e) => setFilters({...filters, town: e.target.value})}
-              className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-800 appearance-none cursor-pointer font-medium hover:border-slate-300 transition-colors"
+              className="w-full pl-9 pr-4 py-3 bg-slate-800/50 border border-slate-700 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-200 appearance-none cursor-pointer font-medium hover:border-slate-600 transition-colors"
             >
-              <option value="">All Towns</option>
+              <option value="" className="bg-slate-800 text-slate-200">All Towns</option>
               {towns.map(town => (
-                <option key={town} value={town}>{town}</option>
+                <option key={town} value={town} className="bg-slate-800 text-slate-200">{town}</option>
               ))}
             </select>
           </div>
@@ -225,7 +225,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
               startDate: '',
               endDate: ''
             })}
-            className="mt-2 text-sm font-bold text-slate-600 hover:text-slate-900 flex items-center justify-center gap-2 bg-white hover:bg-slate-100 px-4 py-3 rounded-xl transition-colors border border-slate-200 shadow-sm hover:border-slate-300 w-full"
+            className="mt-2 text-sm font-bold text-slate-300 hover:text-white flex items-center justify-center gap-2 bg-slate-800/50 hover:bg-slate-700/50 px-4 py-3 rounded-xl transition-colors border border-slate-700 shadow-sm hover:border-slate-600 w-full"
           >
             <X className="w-4 h-4" /> Clear Filters
           </button>

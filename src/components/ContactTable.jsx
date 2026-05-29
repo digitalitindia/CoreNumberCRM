@@ -123,62 +123,80 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
           const serialNo = page * itemsPerPage + index + 1;
           return (
             <div key={contact.id} className="animate-fade-in-up p-3 active:bg-slate-100 transition-colors border-b border-slate-200/50 last:border-0 hover:bg-slate-50">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-6 text-xs font-bold text-slate-400 bg-slate-100 rounded-full px-1">
-                  #{serialNo}
-                </div>
-                <div className="w-10 h-10 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 flex flex-col items-center justify-center shrink-0">
-                  <span className="text-sm font-bold text-slate-900">
-                    {displayName.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-slate-900 text-[15px] truncate max-w-[150px]">
-                      {displayName}
-                    </h3>
-                    <span className="text-[13px] font-bold text-slate-600 bg-white px-2 py-0.5 rounded-md border border-slate-200">+91 {contact.mobile_number}</span>
+              <div className="flex gap-3 relative pb-1">
+                {/* Left Column: Avatar & Serial */}
+                <div className="flex flex-col items-center gap-2 mt-1 shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 flex flex-col items-center justify-center shadow-sm">
+                    <span className="text-sm font-bold text-slate-900">
+                      {displayName.charAt(0).toUpperCase()}
+                    </span>
                   </div>
-                  <div className="flex items-center justify-between mt-1">
-                    <div className="flex items-center gap-2 text-[12px] text-slate-500">
+                  <div className="flex items-center justify-center text-[10px] font-bold text-slate-400 bg-slate-100 rounded-md px-1.5 py-0.5">
+                    #{serialNo}
+                  </div>
+                </div>
+
+                {/* Right Column: Contact Details */}
+                <div className="flex-1 min-w-0">
+                  {/* Name and Menu Button */}
+                  <div className="flex justify-between items-start">
+                    <div className="flex flex-col min-w-0 pr-2">
+                      <h3 className="font-bold text-slate-900 text-[15px] truncate">
+                        {displayName}
+                      </h3>
                       {contact.business_name && contact.person_name && (
-                        <span className="truncate max-w-[150px] font-medium">{contact.business_name}</span>
-                      )}
-                      {contact.category && (
-                        <span className="text-[10px] font-bold tracking-wider px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded">
-                          {contact.category}
+                        <span className="text-[12px] text-slate-500 font-medium truncate">
+                          {contact.business_name}
                         </span>
                       )}
-                      {getStatusBadge(contact.status)}
                     </div>
+                    <button className="p-1.5 -mr-1 text-slate-400 hover:text-indigo-600 hover:bg-slate-100 rounded-lg shrink-0 transition-colors" onClick={() => onEdit(contact)}>
+                      <MoreVertical className="w-4 h-4" />
+                    </button>
                   </div>
+
+                  {/* Badges */}
+                  <div className="flex flex-wrap gap-1.5 mt-1.5">
+                    {contact.category && (
+                      <span className="text-[10px] font-bold tracking-wider px-1.5 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded text-center">
+                        {contact.category}
+                      </span>
+                    )}
+                    {getStatusBadge(contact.status)}
+                  </div>
+
+                  {/* Phone & Date */}
+                  <div className="flex items-center gap-3 mt-2">
+                    <a href={`tel:+91${contact.mobile_number}`} className="text-[12px] font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded shadow-sm hover:text-indigo-600 transition-colors">
+                      +91 {contact.mobile_number}
+                    </a>
+                    <span className="text-[10px] font-medium text-slate-400 flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      {contact.created_at ? format(parseISO(contact.created_at), 'dd MMM yy') : '--'}
+                    </span>
+                  </div>
+
+                  {/* Notes */}
                   {contact.notes && (
-                    <div className="mt-2 text-xs text-slate-500 bg-slate-50 p-2 rounded border border-slate-100 italic line-clamp-2">
-                      <FileText className="w-3 h-3 inline mr-1 text-slate-400" />
+                    <div className="mt-2 text-[11px] text-slate-500 bg-slate-50 p-2 rounded-lg border border-slate-100 italic line-clamp-2 leading-relaxed">
+                      <FileText className="w-3 h-3 inline mr-1 text-slate-400 -mt-0.5" />
                       {contact.notes}
                     </div>
                   )}
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="text-[10px] font-medium text-slate-400 flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      {contact.created_at ? format(parseISO(contact.created_at), 'dd MMM yyyy') : 'Unknown Date'}
-                    </span>
-                    <div className="flex gap-1.5">
-                        <a href={`tel:+91${contact.mobile_number}`} className="p-1.5 bg-blue-50 hover:bg-blue-100 rounded-lg text-blue-600 transition-colors" title="Call">
-                          <PhoneCall className="w-4 h-4" />
-                        </a>
-                        <button onClick={() => handleCopy(contact.mobile_number)} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600 transition-colors" title="Copy">
-                          <Copy className="w-4 h-4" />
-                        </button>
-                        <button onClick={() => handleWhatsApp(contact.mobile_number, displayName)} className="p-1.5 bg-green-50 hover:bg-green-100 rounded-lg text-green-600 transition-colors" title="WhatsApp">
-                          <MessageCircle className="w-4 h-4" />
-                        </button>
-                    </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100/60">
+                      <a href={`tel:+91${contact.mobile_number}`} className="flex-1 flex justify-center items-center gap-1 p-2 bg-blue-50 hover:bg-blue-100 rounded-lg text-blue-600 transition-colors text-[12px] font-bold shadow-sm" title="Call">
+                        <PhoneCall className="w-3.5 h-3.5" /> Call
+                      </a>
+                      <button onClick={() => handleWhatsApp(contact.mobile_number, displayName)} className="flex-1 flex justify-center items-center gap-1 p-2 bg-green-50 hover:bg-green-100 rounded-lg text-green-600 transition-colors text-[12px] font-bold shadow-sm" title="WhatsApp">
+                        <MessageCircle className="w-3.5 h-3.5" /> Chat
+                      </button>
+                      <button onClick={() => handleCopy(contact.mobile_number)} className="p-2 px-3 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600 transition-colors shadow-sm" title="Copy">
+                        <Copy className="w-3.5 h-3.5" />
+                      </button>
                   </div>
                 </div>
-                <button className="p-2 text-slate-500 hover:text-indigo-600 hover:bg-slate-100 rounded-full shrink-0 transition-colors" onClick={() => onEdit(contact)}>
-                  <MoreVertical className="w-4 h-4" />
-                </button>
               </div>
             </div>
           );

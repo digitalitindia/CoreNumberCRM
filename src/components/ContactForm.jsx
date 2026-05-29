@@ -93,10 +93,13 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
     setAvailableTowns([...new Set(towns)]);
   }, [formData.state, formData.city, allSettings]);
 
+  const [exactMatch, setExactMatch] = useState(false);
+
   // Debounced duplicate check
   const checkDuplicate = useCallback(async (number) => {
-    if (!number || number.length < 10) {
+    if (!number || number.length < 2) {
       setDuplicateWarning(null);
+      setExactMatch(false);
       setCheckingDuplicate(false);
       return;
     }
@@ -105,28 +108,48 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
     try {
       let query = supabase
         .from('contacts')
-        .select('person_name, business_name')
-        .eq('mobile_number', number);
+        .select('person_name, business_name, mobile_number')
+        .ilike('mobile_number', `${number}%`)
+        .limit(3);
         
       if (initialData?.id) {
         query = query.neq('id', initialData.id);
       }
 
-      const { data } = await query.single();
+      const { data } = await query;
       
-      if (data) {
-        const name = data.person_name || data.business_name || 'an existing contact';
-        setDuplicateWarning(`This number is already saved as "${name}".`);
+      if (data && data.length > 0) {
+        const exact = data.find(c => c.mobile_number === number);
+        if (number.length === 10 && exact) {
+          const name = exact.person_name || exact.business_name || 'an existing contact';
+          setDuplicateWarning(`This number is already saved as "${name}".`);
+          setExactMatch(true);
+        } else {
+          // Partial matches
+          const matchNames = data.map(c => `${c.mobile_number} (${c.person_name || c.business_name || 'Unknown'})`).join(', ');
+          setDuplicateWarning(`Similar matches: ${matchNames}${data.length === 3 ? '...' : ''}`);
+          setExactMatch(false);
+        }
       } else {
         setDuplicateWarning(null);
+        setExactMatch(false);
       }
     } catch (err) {
       console.error(err);
       setDuplicateWarning(null);
+      setExactMatch(false);
     } finally {
       setCheckingDuplicate(false);
     }
   }, [initialData]);
+
+  // Handle debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      checkDuplicate(formData.mobile_number);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [formData.mobile_number, checkDuplicate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -134,11 +157,6 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
     if (name === 'mobile_number') {
       const cleanValue = value.replace(/\D/g, '').slice(0, 10);
       setFormData(prev => ({ ...prev, [name]: cleanValue }));
-      if (cleanValue.length === 10) {
-        checkDuplicate(cleanValue);
-      } else {
-        setDuplicateWarning(null);
-      }
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -242,13 +260,13 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
                   {!checkingDuplicate && formData.mobile_number.length === 10 && !duplicateWarning && (
                     <CheckCircle className="w-5 h-5 text-emerald-600" />
                   )}
-                  {!checkingDuplicate && formData.mobile_number.length === 10 && duplicateWarning && (
+                  {!checkingDuplicate && exactMatch && (
                     <AlertCircle className="w-5 h-5 text-red-500" />
                   )}
                 </div>
               </div>
               {duplicateWarning && (
-                <div className="mt-2.5 flex items-start gap-2 text-red-400 text-sm font-medium bg-red-500/10 p-2.5 rounded-lg border border-red-500/20">
+                <div className={`mt-2.5 flex items-start gap-2 text-sm font-medium p-2.5 rounded-lg border ${exactMatch ? 'text-red-400 bg-red-500/10 border-red-500/20' : 'text-orange-500 bg-orange-50 border-orange-200'}`}>
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                   <p>{duplicateWarning}</p>
                 </div>

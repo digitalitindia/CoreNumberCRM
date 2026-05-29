@@ -138,20 +138,20 @@ export default function BulkImportModal({ onClose, onImportComplete }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
-      <div className="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-50/80 backdrop-blur-sm">
+      <div className="bg-slate-50 border border-slate-200 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
         
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-800 bg-slate-800/50">
+        <div className="flex items-center justify-between p-5 border-b border-slate-800 bg-white/50">
           <div className="flex items-center gap-3">
             <div className="bg-green-500/20 p-2 rounded-lg">
               <FileSpreadsheet className="w-6 h-6 text-green-400" />
             </div>
-            <h2 className="text-xl font-bold text-white tracking-wide">Bulk Data Import</h2>
+            <h2 className="text-xl font-bold text-slate-900 tracking-wide">Bulk Data Import</h2>
           </div>
           <button 
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-full transition-colors"
+            className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -160,11 +160,11 @@ export default function BulkImportModal({ onClose, onImportComplete }) {
         {/* Content */}
         <div className="p-6">
           <div className="mb-6">
-            <h3 className="text-sm font-bold text-slate-200 mb-2">Step 1: Download Template</h3>
-            <p className="text-xs text-slate-400 mb-3">Download the Excel template to ensure your data is formatted correctly.</p>
+            <h3 className="text-sm font-bold text-slate-800 mb-2">Step 1: Download Template</h3>
+            <p className="text-xs text-slate-500 mb-3">Download the Excel template to ensure your data is formatted correctly.</p>
             <button 
               onClick={handleDownloadTemplate}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-sm font-medium text-slate-200 transition-colors w-full justify-center"
+              className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg text-sm font-medium text-slate-800 transition-colors w-full justify-center"
             >
               <Download className="w-4 h-4 text-green-400" />
               Download Excel Template
@@ -172,12 +172,12 @@ export default function BulkImportModal({ onClose, onImportComplete }) {
           </div>
 
           <div>
-            <h3 className="text-sm font-bold text-slate-200 mb-2">Step 2: Upload Data</h3>
-            <p className="text-xs text-slate-400 mb-3">Upload your filled `.xlsx` or `.csv` file. Duplicates will be updated.</p>
+            <h3 className="text-sm font-bold text-slate-800 mb-2">Step 2: Upload Data</h3>
+            <p className="text-xs text-slate-500 mb-3">Upload your filled `.xlsx` or `.csv` file. Duplicates will be updated.</p>
             
             <div 
               className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all ${
-                dragActive ? 'border-purple-500 bg-purple-500/10' : 'border-slate-600 hover:border-slate-500 bg-slate-800/30'
+                dragActive ? 'border-purple-500 bg-purple-500/10' : 'border-slate-300 hover:border-slate-500 bg-white/30'
               }`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
@@ -196,12 +196,12 @@ export default function BulkImportModal({ onClose, onImportComplete }) {
               {loading ? (
                 <div className="flex flex-col items-center justify-center">
                   <Loader2 className="w-10 h-10 text-purple-500 animate-spin mb-3" />
-                  <p className="text-sm font-medium text-slate-300">Processing file...</p>
+                  <p className="text-sm font-medium text-slate-600">Processing file...</p>
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center cursor-pointer">
-                  <Upload className={`w-10 h-10 mb-3 ${dragActive ? 'text-purple-400' : 'text-slate-400'}`} />
-                  <p className="text-sm font-medium text-slate-200 mb-1">
+                  <Upload className={`w-10 h-10 mb-3 ${dragActive ? 'text-blue-600' : 'text-slate-500'}`} />
+                  <p className="text-sm font-medium text-slate-800 mb-1">
                     Click to upload or drag and drop
                   </p>
                   <p className="text-xs text-slate-500">

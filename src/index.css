@@ -7,8 +7,8 @@
 body {
   margin: 0;
   font-family: var(--font-sans);
-  background-color: #0f172a; /* Slate 900 for premium dark mode */
-  color: #f8fafc;
+  background-color: #f8fafc; /* Slate 50 for professional enterprise light mode */
+  color: #0f172a; /* Slate 900 */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

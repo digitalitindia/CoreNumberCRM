@@ -171,15 +171,15 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-900 text-slate-200">
+    <div className="flex flex-col h-full bg-slate-50 text-slate-800">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700/50 bg-slate-900/50 backdrop-blur-md sticky top-0 z-10">
-        <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/50 bg-slate-50/50 backdrop-blur-md sticky top-0 z-10">
+        <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r text-blue-700">
           {initialData ? 'Edit Contact' : 'New Contact'}
         </h2>
         <button 
           onClick={onClose}
-          className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors"
+          className="p-2 text-slate-500 hover:text-slate-900 hover:bg-white rounded-full transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
@@ -189,14 +189,14 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
       <div className="flex-1 overflow-y-auto p-4 md:p-6 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
         <form id="contact-form" onSubmit={handleSubmit} className="space-y-4 max-w-3xl mx-auto">
           
-          <div className="bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50 space-y-3 shadow-sm relative overflow-hidden">
+          <div className="bg-white/40 p-4 rounded-2xl border border-slate-200/50 space-y-3 shadow-sm relative overflow-hidden">
             <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">
                 Mobile Number *
               </label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold">
                   +91
                 </span>
                 <input
@@ -207,7 +207,7 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
                   value={formData.mobile_number}
                   onChange={handleChange}
                   placeholder="9876543210"
-                  className={`w-full pl-10 pr-10 py-2 bg-slate-900 border ${duplicateWarning ? 'border-red-500 focus:border-red-400 focus:ring-red-500/30' : formData.mobile_number.length === 10 && !checkingDuplicate ? 'border-emerald-500 focus:border-emerald-400 focus:ring-emerald-500/30' : 'border-slate-600 focus:border-purple-400 focus:ring-purple-500/30'} rounded-xl focus:ring-2 outline-none transition-all text-base tracking-wider placeholder:text-slate-500 text-white font-medium`}
+                  className={`w-full pl-10 pr-10 py-2 bg-slate-50 border ${duplicateWarning ? 'border-red-500 focus:border-red-400 focus:ring-red-500/30' : formData.mobile_number.length === 10 && !checkingDuplicate ? 'border-emerald-500 focus:border-emerald-400 focus:ring-emerald-500/30' : 'border-slate-300 focus:border-blue-400 focus:ring-purple-500/30'} rounded-xl focus:ring-2 outline-none transition-all text-base tracking-wider placeholder:text-slate-500 text-slate-900 font-medium`}
                 />
                 
                 {/* Visual Feedback Icons */}
@@ -231,7 +231,7 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+                <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">
                   Business Name
                 </label>
                 <input
@@ -240,11 +240,11 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
                   value={formData.business_name}
                   onChange={handleChange}
                   placeholder="e.g. Reliance Industries"
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-white font-medium"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-slate-900 font-medium"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+                <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">
                   Person Name
                 </label>
                 <input
@@ -253,20 +253,20 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
                   value={formData.person_name}
                   onChange={handleChange}
                   placeholder="e.g. Rahul Sharma"
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-white font-medium"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-slate-900 font-medium"
                 />
               </div>
             </div>
             
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">
                 Category
               </label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all text-white font-medium appearance-none cursor-pointer"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all text-slate-900 font-medium appearance-none cursor-pointer"
               >
                 <option value="" disabled className="text-slate-500">Select Category</option>
                 {availableCategories.map(cat => (
@@ -276,18 +276,18 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
             </div>
           </div>
 
-          <div className="bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50 space-y-3 shadow-sm relative overflow-hidden mb-6">
+          <div className="bg-white/40 p-4 rounded-2xl border border-slate-200/50 space-y-3 shadow-sm relative overflow-hidden mb-6">
             <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+                <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">
                   State
                 </label>
                 <select
                   name="state"
                   value={formData.state}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all text-white font-medium appearance-none cursor-pointer"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all text-slate-900 font-medium appearance-none cursor-pointer"
                 >
                   <option value="" disabled className="text-slate-500">Select State</option>
                   {availableStates.map(state => (
@@ -297,14 +297,14 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
               </div>
               
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+                <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">
                   City
                 </label>
                 <select
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all text-white font-medium appearance-none cursor-pointer"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all text-slate-900 font-medium appearance-none cursor-pointer"
                 >
                   <option value="" disabled className="text-slate-500">Select City</option>
                   {availableCities.map(city => (
@@ -314,14 +314,14 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
               </div>
               
               <div className="sm:col-span-1">
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+                <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">
                   Town / Area
                 </label>
                 <select
                   name="town"
                   value={formData.town}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all text-white font-medium appearance-none cursor-pointer"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all text-slate-900 font-medium appearance-none cursor-pointer"
                 >
                   <option value="" disabled className="text-slate-500">Select Town</option>
                   {availableTowns.map(town => (
@@ -332,7 +332,7 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wide mb-1">
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">
                 Notes
               </label>
               <textarea
@@ -341,7 +341,7 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
                 onChange={handleChange}
                 placeholder="Any additional details..."
                 rows="2"
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all resize-none placeholder:text-slate-500 text-white font-medium custom-scrollbar"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all resize-none placeholder:text-slate-500 text-slate-900 font-medium custom-scrollbar"
               ></textarea>
             </div>
           </div>
@@ -359,11 +359,11 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
       </div>
 
       {/* Footer Actions */}
-      <div className="p-4 md:p-6 border-t border-slate-700/50 bg-slate-900/80 backdrop-blur-md sticky bottom-0 z-10 flex justify-end gap-3">
+      <div className="p-4 md:p-6 border-t border-slate-200/50 bg-slate-50/80 backdrop-blur-md sticky bottom-0 z-10 flex justify-end gap-3">
         <button
           type="button"
           onClick={onClose}
-          className="px-6 py-2.5 text-slate-300 font-medium hover:bg-slate-800 rounded-xl transition-colors"
+          className="px-6 py-2.5 text-slate-600 font-medium hover:bg-white rounded-xl transition-colors"
         >
           Cancel
         </button>
@@ -371,7 +371,7 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
           type="submit"
           form="contact-form"
           disabled={loading || !!duplicateWarning}
-          className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-8 py-2.5 rounded-xl font-medium transition-all shadow-[0_0_15px_rgba(168,85,247,0.3)] disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
+          className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-purple-500 text-slate-900 px-8 py-2.5 rounded-xl font-medium transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
         >
           {loading ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

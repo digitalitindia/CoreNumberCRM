@@ -181,13 +181,13 @@ export default function SettingsModal({ onClose }) {
                       activeTab === 'towns' ? towns : cities;
 
   return (
-    <div className="flex flex-col h-full bg-slate-900 text-slate-200">
-      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-700/50 bg-slate-800/50 backdrop-blur-md sticky top-0 z-10">
+    <div className="flex flex-col h-full bg-slate-50 text-slate-800">
+      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200/50 bg-white/50 backdrop-blur-md sticky top-0 z-10">
         <div>
-          <h2 className="text-xl font-bold text-white tracking-wide">CRM Settings</h2>
-          <p className="text-slate-400 text-sm mt-1">Manage system configurations.</p>
+          <h2 className="text-xl font-bold text-slate-900 tracking-wide">CRM Settings</h2>
+          <p className="text-slate-500 text-sm mt-1">Manage system configurations.</p>
         </div>
-        <button onClick={onClose} className="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-full text-slate-300 hover:text-white transition-colors">
+        <button onClick={onClose} className="p-2 bg-white hover:bg-slate-100 border border-slate-300 rounded-full text-slate-600 hover:text-slate-900 transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
@@ -200,28 +200,28 @@ export default function SettingsModal({ onClose }) {
         ) : (
           <div className="flex flex-col h-full">
             {/* Tabs */}
-            <div className="flex bg-slate-800 p-1.5 rounded-xl mb-6 shadow-inner overflow-x-auto custom-scrollbar">
+            <div className="flex bg-white p-1.5 rounded-xl mb-6 shadow-inner overflow-x-auto custom-scrollbar">
               <button
                 onClick={() => setActiveTab('categories')}
-                className={`flex-1 min-w-[120px] py-2.5 px-4 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'categories' ? 'bg-purple-500 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'}`}
+                className={`flex-1 min-w-[120px] py-2.5 px-4 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'categories' ? 'bg-purple-500 text-slate-900 shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
               >
                 <Briefcase className="w-4 h-4" /> Categories
               </button>
               <button
                 onClick={() => setActiveTab('states')}
-                className={`flex-1 min-w-[100px] py-2.5 px-4 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'states' ? 'bg-blue-500 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'}`}
+                className={`flex-1 min-w-[100px] py-2.5 px-4 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'states' ? 'bg-blue--white shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
               >
                 <MapPin className="w-4 h-4" /> States
               </button>
               <button
                 onClick={() => setActiveTab('cities')}
-                className={`flex-1 min-w-[100px] py-2.5 px-4 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'cities' ? 'bg-emerald-500 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'}`}
+                className={`flex-1 min-w-[100px] py-2.5 px-4 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'cities' ? 'bg-emerald-500 text-slate-900 shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
               >
                 <Building2 className="w-4 h-4" /> Cities
               </button>
               <button
                 onClick={() => setActiveTab('towns')}
-                className={`flex-1 min-w-[100px] py-2.5 px-4 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'towns' ? 'bg-orange-500 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'}`}
+                className={`flex-1 min-w-[100px] py-2.5 px-4 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'towns' ? 'bg-orange-500 text-slate-900 shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
               >
                 <Home className="w-4 h-4" /> Towns
               </button>
@@ -233,7 +233,7 @@ export default function SettingsModal({ onClose }) {
                 <select
                   value={selectedParentState}
                   onChange={e => setSelectedParentState(e.target.value)}
-                  className="px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl outline-none text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-slate-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 >
                   <option value="">-- Select State --</option>
                   {states.map(s => <option key={s.id} value={s.setting_value}>{s.setting_value}</option>)}
@@ -243,7 +243,7 @@ export default function SettingsModal({ onClose }) {
                 <select
                   value={selectedParentCity}
                   onChange={e => setSelectedParentCity(e.target.value)}
-                  className="px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl outline-none text-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                  className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                 >
                   <option value="">-- Select City --</option>
                   {cities.map(c => <option key={c.id} value={c.setting_value}>{c.setting_value} {c.setting_type.startsWith('city_') ? `(${c.setting_type.replace('city_', '')})` : ''}</option>)}
@@ -255,16 +255,14 @@ export default function SettingsModal({ onClose }) {
                   value={newValue} 
                   onChange={e => setNewValue(e.target.value)} 
                   placeholder={`Add new ${activeTab.slice(0, -1)}...`} 
-                  className={`flex-1 px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl outline-none text-white focus:ring-2 transition-all ${
-                    activeTab === 'categories' ? 'focus:border-purple-500 focus:ring-purple-500/20' : 
+                  className={`flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-slate-900 focus:ring-2 transition-all ${
+                    activeTab === 'categories' ? 'focus:border-blue-500 focus:ring-blue-500/20' : 
                     activeTab === 'states' ? 'focus:border-blue-500 focus:ring-blue-500/20' : 
                     activeTab === 'towns' ? 'focus:border-orange-500 focus:ring-orange-500/20' : 
                     'focus:border-emerald-500 focus:ring-emerald-500/20'
                   }`}
                 />
-                <button type="submit" className={`px-6 py-3 rounded-xl font-bold transition-colors flex items-center gap-2 text-white shadow-lg ${
-                  activeTab === 'categories' ? 'bg-purple-600 hover:bg-purple-500' : 
-                  activeTab === 'states' ? 'bg-blue-600 hover:bg-blue-500' : 
+                <button type="submit" className={`px-6 py-3 rounded-xl font-bold transition-colors flex items-center gap-2 text-white600 hover:bg-blue-500' : 
                   activeTab === 'towns' ? 'bg-orange-600 hover:bg-orange-500' : 
                   'bg-emerald-600 hover:bg-emerald-500'
                 }`}>
@@ -274,17 +272,17 @@ export default function SettingsModal({ onClose }) {
             </form>
 
             {/* List View */}
-            <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-4 flex-1 overflow-y-auto custom-scrollbar">
+            <div className="bg-white/40 border border-slate-200/50 rounded-xl p-4 flex-1 overflow-y-auto custom-scrollbar">
               <div className="space-y-2">
                 {currentList.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between bg-slate-900 border border-slate-700 px-4 py-3 rounded-lg hover:border-slate-500 transition-colors group">
+                  <div key={item.id} className="flex items-center justify-between bg-slate-50 border border-slate-200 px-4 py-3 rounded-lg hover:border-slate-500 transition-colors group">
                     {editingId === item.id ? (
                       <div className="flex-1 flex items-center gap-2 mr-2">
                         <input
                           type="text"
                           value={editValue}
                           onChange={e => setEditValue(e.target.value)}
-                          className="flex-1 bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white text-sm outline-none focus:border-blue-500"
+                          className="flex-1 bg-white border border-slate-300 rounded px-2 py-1 text-slate-900 text-sm outline-none focus:border-blue-500"
                           autoFocus
                           onKeyDown={e => {
                             if (e.key === 'Enter') { e.preventDefault(); saveEdit(item); }
@@ -294,13 +292,13 @@ export default function SettingsModal({ onClose }) {
                         <button onClick={() => saveEdit(item)} className="text-emerald-400 hover:bg-emerald-500/20 p-1.5 rounded-md transition-colors">
                           <Check className="w-4 h-4" />
                         </button>
-                        <button onClick={() => setEditingId(null)} className="text-slate-400 hover:bg-slate-700 p-1.5 rounded-md transition-colors">
+                        <button onClick={() => setEditingId(null)} className="text-slate-500 hover:bg-slate-100 p-1.5 rounded-md transition-colors">
                           <X className="w-4 h-4" />
                         </button>
                       </div>
                     ) : (
                       <>
-                        <span className="text-slate-200 font-medium">
+                        <span className="text-slate-800 font-medium">
                           {item.setting_value}
                           {item.setting_type.startsWith('city_') && <span className="text-slate-500 ml-2 text-xs">({item.setting_type.replace('city_', '')})</span>}
                           {item.setting_type.startsWith('town_') && <span className="text-slate-500 ml-2 text-xs">({item.setting_type.replace('town_', '')})</span>}
@@ -324,10 +322,10 @@ export default function SettingsModal({ onClose }) {
         )}
       </div>
 
-      <div className="p-4 border-t border-slate-700/50 bg-slate-800/80">
+      <div className="p-4 border-t border-slate-200/50 bg-white/80">
         <button 
           onClick={onClose}
-          className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-bold transition-all shadow-lg"
+          className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-slate-200 hover:bg-slate-600 text-slate-900 rounded-xl font-bold transition-all shadow-lg"
         >
           Close Settings
         </button>

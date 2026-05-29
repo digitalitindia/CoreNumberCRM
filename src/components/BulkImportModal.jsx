@@ -212,8 +212,8 @@ export default function BulkImportModal({ onClose, onImportComplete }) {
             </div>
           </div>
           
-          <div className="mt-5 flex items-start gap-2 bg-yellow-500/10 border border-yellow-500/20 p-3 rounded-lg text-xs text-yellow-200/80">
-            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+          <div className="mt-5 flex items-start gap-2 bg-yellow-50 border border-yellow-200 p-3 rounded-lg text-xs text-yellow-800">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-yellow-600" />
             <p>Ensure that all Mobile Numbers are valid 10-digit formats. Records with invalid or missing numbers will be skipped.</p>
           </div>
         </div>

@@ -4,7 +4,7 @@ import ContactForm from './components/ContactForm';
 import ContactTable from './components/ContactTable';
 import Filters from './components/Filters';
 import BulkImportModal from './components/BulkImportModal';
-import { Plus, Search, LogOut, Users, Settings, Upload, Download, Briefcase, Building2, MapPin, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Search, LogOut, Users, Settings, Upload, Download, Briefcase, Building2, MapPin, AlertCircle, ChevronLeft, ChevronRight, Phone, CheckCircle, Database } from 'lucide-react';
 import { toast, Toaster } from 'react-hot-toast';
 import * as XLSX from 'xlsx';
 import { isToday, isThisWeek, isThisMonth, isThisYear, parseISO } from 'date-fns';
@@ -41,7 +41,16 @@ export default function App() {
   const fetchStats = async () => {
     try {
       const { count: total } = await supabase.from('contacts').select('*', { count: 'exact', head: true });
-      setStats({ total: total || 0 });
+      const { count: leads } = await supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('status', 'lead');
+      const { count: followUps } = await supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('status', 'follow_up');
+      const { count: converted } = await supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('status', 'converted');
+      
+      setStats({ 
+        total: total || 0,
+        leads: leads || 0,
+        followUps: followUps || 0,
+        converted: converted || 0
+      });
     } catch (err) {
       console.error('Error fetching stats:', err);
     }
@@ -344,42 +353,42 @@ export default function App() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-indigo-200 transition-colors">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Contacts</h3>
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Leads</h3>
                 <div className="p-1 bg-indigo-50 text-indigo-600 rounded">
                   <Users className="w-4 h-4" />
                 </div>
               </div>
-              <p className="text-2xl font-bold text-slate-900">{stats.totalContacts}</p>
+              <p className="text-2xl font-bold text-slate-900">{stats.leads || 0}</p>
             </div>
             
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-indigo-200 transition-colors">
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-yellow-200 transition-colors">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Categories</h3>
-                <div className="p-1 bg-indigo-50 text-indigo-600 rounded">
-                  <Briefcase className="w-4 h-4" />
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Follow-ups</h3>
+                <div className="p-1 bg-yellow-50 text-yellow-600 rounded">
+                  <Phone className="w-4 h-4" />
                 </div>
               </div>
-              <p className="text-2xl font-bold text-slate-900">{stats.totalCategories}</p>
+              <p className="text-2xl font-bold text-slate-900">{stats.followUps || 0}</p>
             </div>
 
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-indigo-200 transition-colors">
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-green-200 transition-colors">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cities</h3>
-                <div className="p-1 bg-indigo-50 text-indigo-600 rounded">
-                  <Building2 className="w-4 h-4" />
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Converted</h3>
+                <div className="p-1 bg-green-50 text-green-600 rounded">
+                  <CheckCircle className="w-4 h-4" />
                 </div>
               </div>
-              <p className="text-2xl font-bold text-slate-900">{stats.totalCities}</p>
+              <p className="text-2xl font-bold text-slate-900">{stats.converted || 0}</p>
             </div>
 
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-indigo-200 transition-colors">
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-blue-200 transition-colors">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">States</h3>
-                <div className="p-1 bg-indigo-50 text-indigo-600 rounded">
-                  <MapPin className="w-4 h-4" />
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Database</h3>
+                <div className="p-1 bg-blue-50 text-blue-600 rounded">
+                  <Database className="w-4 h-4" />
                 </div>
               </div>
-              <p className="text-2xl font-bold text-slate-900">{stats.totalStates}</p>
+              <p className="text-2xl font-bold text-slate-900">{stats.total || 0}</p>
             </div>
           </div>
 

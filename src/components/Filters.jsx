@@ -141,6 +141,24 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
             </div>
           </div>
         )}
+
+        {/* Pipeline Status Filter */}
+        <div>
+          <div className="relative">
+            <Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <select
+              value={filters.status}
+              onChange={(e) => setFilters({...filters, status: e.target.value})}
+              className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-800 appearance-none cursor-pointer font-bold hover:border-slate-300 transition-colors"
+            >
+              <option value="all">All Statuses</option>
+              <option value="lead">🔵 New Lead</option>
+              <option value="follow_up">🟡 Follow-up</option>
+              <option value="converted">🟢 Converted</option>
+              <option value="not_interested">🔴 Not Interested</option>
+            </select>
+          </div>
+        </div>
         
         {/* State Filter */}
         <div>
@@ -203,7 +221,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
               city: '',
               town: '',
               category: '',
-              timeRange: 'all',
+              status: 'all',
               startDate: '',
               endDate: ''
             })}
@@ -309,6 +327,25 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
               </div>
             </div>
           )}
+
+          {/* Pipeline Status Filter */}
+          <div>
+            <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Pipeline Status</label>
+            <div className="relative">
+              <Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
+              <select
+                value={filters.status}
+                onChange={(e) => setFilters({...filters, status: e.target.value})}
+                className="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-blue-400 text-slate-900 appearance-none cursor-pointer font-bold"
+              >
+                <option value="all">All Statuses</option>
+                <option value="lead">🔵 New Lead</option>
+                <option value="follow_up">🟡 Follow-up</option>
+                <option value="converted">🟢 Converted</option>
+                <option value="not_interested">🔴 Not Interested</option>
+              </select>
+            </div>
+          </div>
 
           {/* Location Filters */}
           <div>

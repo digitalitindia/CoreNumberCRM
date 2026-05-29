@@ -23,7 +23,8 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
         town: initialData.town || '',
         category: initialData.category || '',
         business_name: initialData.business_name || '',
-        person_name: initialData.person_name || ''
+        person_name: initialData.person_name || '',
+        status: initialData.status || 'lead'
       };
     }
     return {
@@ -34,7 +35,8 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
       town: '',
       category: '',
       business_name: '',
-      person_name: ''
+      person_name: '',
+      status: 'lead'
     };
   });
 
@@ -373,6 +375,23 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
                   ))}
                 </select>
               </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">
+                Pipeline Status
+              </label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all text-slate-900 font-bold appearance-none cursor-pointer"
+              >
+                <option value="lead">🔵 New Lead</option>
+                <option value="follow_up">🟡 Follow-up</option>
+                <option value="converted">🟢 Converted</option>
+                <option value="not_interested">🔴 Not Interested</option>
+              </select>
             </div>
 
             <div>

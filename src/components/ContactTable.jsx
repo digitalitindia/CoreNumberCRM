@@ -17,8 +17,18 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
     toast.success('Number copied to clipboard');
   };
 
-  const handleWhatsApp = (number) => {
-    window.open(`https://wa.me/91${number}`, '_blank');
+  const handleWhatsApp = (number, name) => {
+    const text = encodeURIComponent(`Hi ${name}, `);
+    window.open(`https://wa.me/91${number}?text=${text}`, '_blank');
+  };
+
+  const getStatusBadge = (status) => {
+    switch(status) {
+      case 'follow_up': return <span className="px-2 py-0.5 text-[10px] font-bold bg-yellow-100 text-yellow-700 border border-yellow-200 rounded-md">Follow-up</span>;
+      case 'converted': return <span className="px-2 py-0.5 text-[10px] font-bold bg-green-100 text-green-700 border border-green-200 rounded-md">Converted</span>;
+      case 'not_interested': return <span className="px-2 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 border border-red-200 rounded-md">Not Interested</span>;
+      default: return <span className="px-2 py-0.5 text-[10px] font-bold bg-blue-100 text-blue-700 border border-blue-200 rounded-md">Lead</span>;
+    }
   };
 
   const filteredContacts = contacts.filter(contact => {
@@ -139,6 +149,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                           {contact.category}
                         </span>
                       )}
+                      {getStatusBadge(contact.status)}
                     </div>
                   </div>
                   {contact.notes && (
@@ -153,10 +164,13 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                       {contact.created_at ? format(parseISO(contact.created_at), 'dd MMM yyyy') : 'Unknown Date'}
                     </span>
                     <div className="flex gap-1.5">
-                        <button onClick={() => handleCopy(contact.mobile_number)} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600 transition-colors">
+                        <a href={`tel:+91${contact.mobile_number}`} className="p-1.5 bg-blue-50 hover:bg-blue-100 rounded-lg text-blue-600 transition-colors" title="Call">
+                          <PhoneCall className="w-4 h-4" />
+                        </a>
+                        <button onClick={() => handleCopy(contact.mobile_number)} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600 transition-colors" title="Copy">
                           <Copy className="w-4 h-4" />
                         </button>
-                        <button onClick={() => handleWhatsApp(contact.mobile_number)} className="p-1.5 bg-green-50 hover:bg-green-100 rounded-lg text-green-600 transition-colors">
+                        <button onClick={() => handleWhatsApp(contact.mobile_number, displayName)} className="p-1.5 bg-green-50 hover:bg-green-100 rounded-lg text-green-600 transition-colors" title="WhatsApp">
                           <MessageCircle className="w-4 h-4" />
                         </button>
                     </div>
@@ -218,18 +232,22 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                               {contact.category}
                             </span>
                           )}
+                          {getStatusBadge(contact.status)}
                         </div>
                       </div>
                     </div>
                   </td>
                   <td className="px-3 py-2 text-sm font-medium text-slate-600">
                     <div className="flex items-center gap-2">
-                      <span className="tracking-wide text-[13px] bg-slate-50 border border-slate-200 px-1.5 py-0.5 rounded text-slate-700 font-bold">+91 {contact.mobile_number}</span>
+                      <a href={`tel:+91${contact.mobile_number}`} className="tracking-wide text-[13px] bg-slate-50 border border-slate-200 px-1.5 py-0.5 rounded text-slate-700 font-bold hover:bg-slate-100 hover:text-indigo-600 transition-colors">+91 {contact.mobile_number}</a>
                       <div className="flex gap-1.5 ml-2">
+                        <a href={`tel:+91${contact.mobile_number}`} className="p-1.5 bg-blue-50 hover:bg-blue-100 rounded text-blue-600 transition-colors" title="Call">
+                          <PhoneCall className="w-3.5 h-3.5" />
+                        </a>
                         <button onClick={() => handleCopy(contact.mobile_number)} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded text-slate-600 transition-colors" title="Copy">
                           <Copy className="w-3.5 h-3.5" />
                         </button>
-                        <button onClick={() => handleWhatsApp(contact.mobile_number)} className="p-1.5 bg-green-50 hover:bg-green-100 rounded text-green-600 transition-colors" title="WhatsApp">
+                        <button onClick={() => handleWhatsApp(contact.mobile_number, displayName)} className="p-1.5 bg-green-50 hover:bg-green-100 rounded text-green-600 transition-colors" title="WhatsApp">
                           <MessageCircle className="w-3.5 h-3.5" />
                         </button>
                       </div>

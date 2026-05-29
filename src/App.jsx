@@ -4,7 +4,7 @@ import ContactForm from './components/ContactForm';
 import ContactTable from './components/ContactTable';
 import Filters from './components/Filters';
 import BulkImportModal from './components/BulkImportModal';
-import { Users, Search, Plus, LogOut, ChevronLeft, ChevronRight, Upload, Briefcase, Building2, MapPin } from 'lucide-react';
+import { Users, Search, Plus, LogOut, ChevronLeft, ChevronRight, Upload, Briefcase, Building2, MapPin, AlertCircle } from 'lucide-react';
 import { Toaster, toast } from 'react-hot-toast';
 import Login from './components/Login';
 import SettingsModal from './components/SettingsModal';
@@ -137,6 +137,26 @@ export default function App() {
   const handleSignOut = () => {
     setIsLocked(true);
   };
+
+  if (!supabase) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-slate-300 p-6">
+        <AlertCircle className="w-16 h-16 text-red-500 mb-6" />
+        <h1 className="text-3xl font-bold text-white mb-4">Missing Environment Variables</h1>
+        <p className="max-w-md text-center text-slate-400 mb-6">
+          Your Vercel deployment is missing the required Supabase environment variables.
+        </p>
+        <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 w-full max-w-lg text-sm text-slate-300 font-mono">
+          <p>Please add the following variables in your Vercel Project Settings:</p>
+          <ul className="list-disc ml-6 mt-2 text-emerald-400">
+            <li>VITE_SUPABASE_URL</li>
+            <li>VITE_SUPABASE_ANON_KEY</li>
+          </ul>
+        </div>
+        <p className="mt-6 text-slate-500 text-sm">After adding them, trigger a new deployment.</p>
+      </div>
+    );
+  }
 
   if (isLocked) {
     return (

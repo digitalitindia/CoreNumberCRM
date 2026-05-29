@@ -177,7 +177,7 @@ export default function BulkImportModal({ onClose, onImportComplete }) {
             
             <div 
               className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all ${
-                dragActive ? 'border-purple-500 bg-purple-500/10' : 'border-slate-300 hover:border-slate-500 bg-white/30'
+                dragActive ? 'border-purple-500 bg-purple-500/10' : 'border-slate-300 hover:border-slate-300 bg-white/30'
               }`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
@@ -200,7 +200,7 @@ export default function BulkImportModal({ onClose, onImportComplete }) {
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center cursor-pointer">
-                  <Upload className={`w-10 h-10 mb-3 ${dragActive ? 'text-blue-600' : 'text-slate-500'}`} />
+                  <Upload className={`w-10 h-10 mb-3 ${dragActive ? 'text-indigo-600' : 'text-slate-500'}`} />
                   <p className="text-sm font-medium text-slate-800 mb-1">
                     Click to upload or drag and drop
                   </p>

@@ -209,7 +209,7 @@ export default function SettingsModal({ onClose }) {
               </button>
               <button
                 onClick={() => setActiveTab('states')}
-                className={`flex-1 min-w-[100px] py-2.5 px-4 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'states' ? 'bg-blue--white shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
+                className={`flex-1 min-w-[100px] py-2.5 px-4 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'states' ? 'bg-blue-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
               >
                 <MapPin className="w-4 h-4" /> States
               </button>
@@ -256,13 +256,15 @@ export default function SettingsModal({ onClose }) {
                   onChange={e => setNewValue(e.target.value)} 
                   placeholder={`Add new ${activeTab.slice(0, -1)}...`} 
                   className={`flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-slate-900 focus:ring-2 transition-all ${
-                    activeTab === 'categories' ? 'focus:border-blue-500 focus:ring-blue-500/20' : 
-                    activeTab === 'states' ? 'focus:border-blue-500 focus:ring-blue-500/20' : 
+                    activeTab === 'categories' ? 'focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:ring-blue-500/20' : 
+                    activeTab === 'states' ? 'focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:ring-blue-500/20' : 
                     activeTab === 'towns' ? 'focus:border-orange-500 focus:ring-orange-500/20' : 
                     'focus:border-emerald-500 focus:ring-emerald-500/20'
                   }`}
                 />
-                <button type="submit" className={`px-6 py-3 rounded-xl font-bold transition-colors flex items-center gap-2 text-white600 hover:bg-blue-500' : 
+                <button type="submit" className={`px-6 py-3 rounded-xl font-bold transition-colors flex items-center gap-2 text-white ${
+                  activeTab === 'categories' ? 'bg-indigo-600 hover:bg-indigo-500' : 
+                  activeTab === 'states' ? 'bg-blue-600 hover:bg-blue-500' : 
                   activeTab === 'towns' ? 'bg-orange-600 hover:bg-orange-500' : 
                   'bg-emerald-600 hover:bg-emerald-500'
                 }`}>
@@ -275,21 +277,21 @@ export default function SettingsModal({ onClose }) {
             <div className="bg-white/40 border border-slate-200/50 rounded-xl p-4 flex-1 overflow-y-auto custom-scrollbar">
               <div className="space-y-2">
                 {currentList.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between bg-slate-50 border border-slate-200 px-4 py-3 rounded-lg hover:border-slate-500 transition-colors group">
+                  <div key={item.id} className="flex items-center justify-between bg-slate-50 border border-slate-200 px-4 py-3 rounded-lg hover:border-slate-300 transition-colors group">
                     {editingId === item.id ? (
                       <div className="flex-1 flex items-center gap-2 mr-2">
                         <input
                           type="text"
                           value={editValue}
                           onChange={e => setEditValue(e.target.value)}
-                          className="flex-1 bg-white border border-slate-300 rounded px-2 py-1 text-slate-900 text-sm outline-none focus:border-blue-500"
+                          className="flex-1 bg-white border border-slate-300 rounded px-2 py-1 text-slate-900 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
                           autoFocus
                           onKeyDown={e => {
                             if (e.key === 'Enter') { e.preventDefault(); saveEdit(item); }
                             if (e.key === 'Escape') setEditingId(null);
                           }}
                         />
-                        <button onClick={() => saveEdit(item)} className="text-emerald-400 hover:bg-emerald-500/20 p-1.5 rounded-md transition-colors">
+                        <button onClick={() => saveEdit(item)} className="text-emerald-600 hover:bg-emerald-500/20 p-1.5 rounded-md transition-colors">
                           <Check className="w-4 h-4" />
                         </button>
                         <button onClick={() => setEditingId(null)} className="text-slate-500 hover:bg-slate-100 p-1.5 rounded-md transition-colors">
@@ -304,7 +306,7 @@ export default function SettingsModal({ onClose }) {
                           {item.setting_type.startsWith('town_') && <span className="text-slate-500 ml-2 text-xs">({item.setting_type.replace('town_', '')})</span>}
                         </span>
                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button onClick={() => startEdit(item)} type="button" className="text-slate-500 hover:text-blue-400 p-1.5 rounded-md hover:bg-blue-500/10 transition-colors">
+                          <button onClick={() => startEdit(item)} type="button" className="text-slate-500 hover:text-indigo-600 p-1.5 rounded-md hover:bg-blue-500/10 transition-colors">
                             <Edit2 className="w-4 h-4" />
                           </button>
                           <button onClick={() => removeSetting(item.id, item.setting_type)} type="button" className="text-slate-500 hover:text-red-400 p-1.5 rounded-md hover:bg-red-500/10 transition-colors">
@@ -325,9 +327,9 @@ export default function SettingsModal({ onClose }) {
       <div className="p-4 border-t border-slate-200/50 bg-white/80">
         <button 
           onClick={onClose}
-          className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-slate-200 hover:bg-slate-600 text-slate-900 rounded-xl font-bold transition-all shadow-lg"
+          className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-sm"
         >
-          Close Settings
+          Back to Dashboard
         </button>
       </div>
       <style>{`

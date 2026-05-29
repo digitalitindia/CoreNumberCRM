@@ -4,8 +4,10 @@ import ContactForm from './components/ContactForm';
 import ContactTable from './components/ContactTable';
 import Filters from './components/Filters';
 import BulkImportModal from './components/BulkImportModal';
-import { Users, Search, Plus, LogOut, ChevronLeft, ChevronRight, Upload, Briefcase, Building2, MapPin, AlertCircle } from 'lucide-react';
-import { Toaster, toast } from 'react-hot-toast';
+import { Plus, Search, LogOut, Users, Settings, Upload, Download } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import * as XLSX from 'xlsx';
+import { isToday, isThisWeek, isThisMonth, isThisYear, parseISO } from 'date-fns';
 import Login from './components/Login';
 import SettingsModal from './components/SettingsModal';
 import { startOfDay, startOfWeek, startOfMonth, startOfYear, endOfDay, endOfWeek, endOfMonth, endOfYear } from 'date-fns';
@@ -13,7 +15,6 @@ import { startOfDay, startOfWeek, startOfMonth, startOfYear, endOfDay, endOfWeek
 const ITEMS_PER_PAGE = 50;
 
 export default function App() {
-  // Temporarily bypass login so the user can see the design
   const [isLocked, setIsLocked] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -21,7 +22,6 @@ export default function App() {
   const [isBulkImportOpen, setIsBulkImportOpen] = useState(false);
   const [editingContact, setEditingContact] = useState(null);
   
-  // Pagination and Stats state
   const [page, setPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [stats, setStats] = useState({ total: 0 });
@@ -38,7 +38,6 @@ export default function App() {
     endDate: ''
   });
 
-  // Calculate stats independently
   const fetchStats = async () => {
     try {
       const { count: total } = await supabase.from('contacts').select('*', { count: 'exact', head: true });
@@ -48,12 +47,67 @@ export default function App() {
     }
   };
 
+  const handleExport = () => {
+    const filtered = contacts.filter(contact => {
+      if (filters.timeRange !== 'all' && contact.created_at) {
+        const date = parseISO(contact.created_at);
+        if (filters.timeRange === 'today' && !isToday(date)) return false;
+        if (filters.timeRange === 'week' && !isThisWeek(date)) return false;
+        if (filters.timeRange === 'month' && !isThisMonth(date)) return false;
+        if (filters.timeRange === 'year' && !isThisYear(date)) return false;
+        if (filters.timeRange === 'custom' && filters.startDate && filters.endDate) {
+          const start = new Date(filters.startDate);
+          const end = new Date(filters.endDate);
+          end.setHours(23, 59, 59, 999);
+          if (date < start || date > end) return false;
+        }
+      }
+      if (filters.status && filters.status !== 'all' && contact.status !== filters.status) return false;
+      if (filters.state && !contact.state?.toLowerCase().includes(filters.state.toLowerCase())) return false;
+      if (filters.city && !contact.city?.toLowerCase().includes(filters.city.toLowerCase())) return false;
+      if (filters.town && !contact.town?.toLowerCase().includes(filters.town.toLowerCase())) return false;
+      if (filters.search) {
+        const search = filters.search.toLowerCase();
+        const matchBName = contact.business_name?.toLowerCase().includes(search);
+        const matchPName = contact.person_name?.toLowerCase().includes(search);
+        const matchNum = contact.mobile_number?.includes(search);
+        if (!matchBName && !matchPName && !matchNum) return false;
+      }
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      toast.error('No records to export');
+      return;
+    }
+
+    const exportData = filtered.map(c => ({
+      'Mobile Number': c.mobile_number,
+      'Person Name': c.person_name || '',
+      'Business Name': c.business_name || '',
+      'Category': c.category || '',
+      'State': c.state || '',
+      'City': c.city || '',
+      'Town': c.town || '',
+      'Notes': c.notes || ''
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    worksheet['!cols'] = [
+      { wch: 15 }, { wch: 20 }, { wch: 25 }, { wch: 15 }, 
+      { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 30 }
+    ];
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Filtered_Contacts");
+    XLSX.writeFile(workbook, `Contacts_Export_${new Date().toISOString().split('T')[0]}.xlsx`);
+    toast.success(`Exported ${filtered.length} records`);
+  };
+
   const fetchContacts = useCallback(async () => {
     setLoading(true);
     try {
       let query = supabase.from('contacts').select('*', { count: 'exact' });
 
-      // Apply Filters
       if (filters.status && filters.status !== 'all') {
         query = query.eq('status', filters.status);
       }
@@ -148,7 +202,7 @@ export default function App() {
         </p>
         <div className="bg-white p-4 rounded-xl border border-slate-200 w-full max-w-lg text-sm text-slate-600 font-mono">
           <p>Please add the following variables in your Vercel Project Settings:</p>
-          <ul className="list-disc ml-6 mt-2 text-emerald-400">
+          <ul className="list-disc ml-6 mt-2 text-emerald-600">
             <li>VITE_SUPABASE_URL</li>
             <li>VITE_SUPABASE_ANON_KEY</li>
           </ul>
@@ -177,40 +231,33 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-purple-500/30">
-      <Toaster position="top-center" toastOptions={{ style: { background: '#1e293b', color: '#fff', border: '1px solid #334155' } }} />
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-indigo-500/30">
+      <Toaster position="top-center" toastOptions={{ style: { background: '#ffffff', color: '#0f172a', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' } }} />
 
-      {/* Decorative Background Elements */}
-      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 rounded-full mix-blend-screen filter blur-[100px]"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/10 rounded-full mix-blend-screen filter blur-[100px]"></div>
-      </div>
-
-      {/* Premium Glass Header */}
-      <header className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between gap-4 bg-slate-50/70 backdrop-blur-xl border-b border-slate-200 shadow-lg">
+      {/* Premium Clean Header */}
+      <header className="sticky top-0 z-20 px-6 py-4 flex items-center justify-between gap-4 bg-white/80 backdrop-blur-xl border-b border-slate-200">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3 group">
-            <div className="bg-blue--white p-2.5 rounded-xl shadow-md group-hover:shadow-lg transition-all duration-300 transform group-hover:scale-105">
-              <Users className="w-6 h-6" />
+            <div className="bg-indigo-600 p-2.5 rounded-lg shadow-sm text-white group-hover:bg-indigo-700 transition-colors">
+              <Users className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{getGreeting()}</span>
-              <h1 className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r text-blue-700 tracking-wide">
+              <h1 className="text-xl font-bold text-slate-900 tracking-tight">
                 CoreNumber CRM
               </h1>
             </div>
           </div>
         </div>
 
-        {/* Global Search Bar (High Contrast) */}
-        <div className="flex-1 max-w-2xl mx-auto hidden md:flex items-center bg-white rounded-xl px-4 py-2.5 focus-within:bg-white transition-all border border-slate-300 focus-within:border-blue-400 focus-within:shadow-sm">
-          <Search className="w-5 h-5 text-slate-600" />
+        {/* Global Search Bar */}
+        <div className="flex-1 max-w-2xl mx-auto hidden md:flex items-center bg-white rounded-lg px-4 py-2 border border-slate-200 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-sm">
+          <Search className="w-4 h-4 text-slate-400" />
           <input
             type="text"
             placeholder="Search any record..."
             value={filters.search}
             onChange={(e) => setFilters({...filters, search: e.target.value})}
-            className="bg-transparent border-none outline-none w-full ml-3 text-slate-900 placeholder:text-slate-500 text-base font-medium"
+            className="bg-transparent border-none outline-none w-full ml-3 text-slate-900 placeholder:text-slate-400 text-sm font-medium"
           />
         </div>
 
@@ -225,7 +272,7 @@ export default function App() {
           </button>
           <button 
             onClick={handleSignOut}
-            className="flex items-center gap-2 text-slate-800 hover:text-slate-900 hover:bg-slate-100 px-3 md:px-4 py-2 rounded-xl font-bold transition-colors text-sm border border-slate-200 hover:border-slate-500 bg-white"
+            className="flex items-center gap-2 text-slate-800 hover:text-slate-900 hover:bg-slate-100 px-3 md:px-4 py-2 rounded-xl font-bold transition-colors text-sm border border-slate-200 hover:border-slate-300 bg-white"
           >
             <LogOut className="w-5 h-5" />
             <span className="hidden sm:inline">Lock App</span>
@@ -233,29 +280,29 @@ export default function App() {
         </div>
       </header>
 
-      <div className="flex pb-20 md:pb-0 relative z-10">
+      <div className="flex pb-20 md:pb-0 relative z-10 w-full">
         {/* Sidebar (Desktop Premium) */}
-        <aside className="w-72 hidden md:flex flex-col gap-2 px-4 py-6 fixed h-full top-[73px] border-r border-slate-200 bg-slate-50/50 backdrop-blur-md">
+        <aside className="w-64 hidden md:flex flex-col gap-2 px-5 py-8 fixed h-full top-[73px] border-r border-slate-800 bg-slate-900 text-slate-300">
           <button
             onClick={() => {
               setEditingContact(null);
               setIsFormOpen(true);
             }}
-            className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-purple-500 text-slate-900 px-6 py-3.5 rounded-xl transition-all font-semibold shadow-md hover:shadow-lg mb-6 transform hover:scale-[1.02] active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-lg transition-colors font-medium shadow-sm mb-6 w-full"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4" />
             <span>Create Contact</span>
           </button>
 
           <div 
             onClick={() => setFilters({...filters, status: 'all'})}
-            className={`flex items-center justify-between px-5 py-3.5 rounded-xl cursor-pointer transition-all ${filters.status === 'all' ? 'bg-blue-100 border border-blue-400 text-blue-800 shadow-inner' : 'hover:bg-white text-slate-800 border border-slate-200'}`}
+            className={`flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-colors ${filters.status === 'all' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white font-medium text-slate-400'}`}
           >
             <div className="flex items-center gap-3">
-              <Users className="w-5 h-5" />
-              <span className="font-bold text-sm">All Contacts</span>
+              <Users className="w-4 h-4" />
+              <span className="text-sm">All Contacts</span>
             </div>
-            <span className="text-xs font-black text-slate-900 bg-slate-200 px-2 py-1 rounded-md border border-slate-300">{stats.total}</span>
+            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${filters.status === 'all' ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400'}`}>{stats.total}</span>
           </div>
 
           <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 mb-4">
@@ -264,92 +311,90 @@ export default function App() {
 
           <div 
             onClick={() => setIsSettingsOpen(true)}
-            className="flex items-center justify-between px-5 py-3.5 rounded-xl cursor-pointer transition-all hover:bg-white text-slate-800 border border-slate-200 mt-auto bg-white/50 shrink-0"
+            className="flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-colors hover:bg-slate-800 hover:text-white text-slate-400 font-medium mt-auto shrink-0 mb-20"
           >
             <div className="flex items-center gap-3">
-              <span className="text-lg">⚙️</span>
-              <span className="font-bold text-sm text-slate-900">Settings</span>
+              <Settings className="w-4 h-4" />
+              <span className="text-sm">Settings</span>
             </div>
           </div>
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 md:ml-72 p-3 sm:p-4 md:p-6 w-full">
+        <main className="flex-1 md:ml-64 p-3 sm:p-6 md:p-8 w-full">
+          {isSettingsOpen ? (
+            <div className="h-[calc(100vh-140px)] bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative">
+              <SettingsModal onClose={() => setIsSettingsOpen(false)} />
+            </div>
+          ) : (
+            <>
           
-          {/* Dashboard Metrics Cards (High Contrast) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-1 md:px-0 mb-6 mt-2 md:mt-0">
-            <div onClick={() => setFilters({...filters, status: 'all'})} className="animate-fade-in-up bg-white/80 backdrop-blur-md border-2 border-slate-300 hover:border-blue-500 cursor-pointer transition-all p-5 md:p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-xl group hover:shadow-[0_0_30px_rgba(59,130,246,0.2)]">
-              <span className="text-4xl md:text-5xl font-black text-slate-900 group-hover:scale-110 transition-transform drop-shadow-md">{stats.total}</span>
-              <span className="text-sm md:text-base font-bold text-blue-400 mt-2 uppercase tracking-widest">Total Contacts</span>
+          {/* Detailed Stats Cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-indigo-200 transition-colors">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Contacts</h3>
+                <div className="p-1 bg-indigo-50 text-indigo-600 rounded">
+                  <Users className="w-4 h-4" />
+                </div>
+              </div>
+              <p className="text-2xl font-bold text-slate-900">{stats.totalContacts}</p>
             </div>
             
-            <div onClick={() => {
-              setEditingContact(null);
-              setIsFormOpen(true);
-            }} className="animate-fade-in-up animate-delay-100 bg-white/80 backdrop-blur-md border-2 border-slate-300 hover:border-blue-500 cursor-pointer transition-all p-5 md:p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-xl group hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]">
-              <div className="bg-blue-600 p-3 rounded-full mb-2 shadow-[0_0_15px_rgba(168,85,247,0.5)] group-hover:scale-110 transition-transform border border-white/20">
-                <Plus className="w-7 h-7 text-slate-900 font-bold" />
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-indigo-200 transition-colors">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Categories</h3>
+                <div className="p-1 bg-indigo-50 text-indigo-600 rounded">
+                  <Briefcase className="w-4 h-4" />
+                </div>
               </div>
-              <span className="text-sm md:text-base font-bold text-slate-800 mt-1 uppercase tracking-widest">Add New Contact</span>
+              <p className="text-2xl font-bold text-slate-900">{stats.totalCategories}</p>
             </div>
 
-            <div onClick={() => setIsBulkImportOpen(true)} className="animate-fade-in-up animate-delay-200 bg-white/80 backdrop-blur-md border-2 border-slate-300 hover:border-emerald-500 cursor-pointer transition-all p-5 md:p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-xl group hover:shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-              <div className="bg-gradient-to-tr from-emerald-500 to-teal-600 p-3 rounded-full mb-2 shadow-[0_0_15px_rgba(16,185,129,0.5)] group-hover:scale-110 transition-transform border border-white/20">
-                <Upload className="w-7 h-7 text-slate-900 font-bold" />
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-indigo-200 transition-colors">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cities</h3>
+                <div className="p-1 bg-indigo-50 text-indigo-600 rounded">
+                  <Building2 className="w-4 h-4" />
+                </div>
               </div>
-              <span className="text-sm md:text-base font-bold text-slate-800 mt-1 uppercase tracking-widest">Bulk Import Excel</span>
+              <p className="text-2xl font-bold text-slate-900">{stats.totalCities}</p>
+            </div>
+
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-indigo-200 transition-colors">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">States</h3>
+                <div className="p-1 bg-indigo-50 text-indigo-600 rounded">
+                  <MapPin className="w-4 h-4" />
+                </div>
+              </div>
+              <p className="text-2xl font-bold text-slate-900">{stats.totalStates}</p>
             </div>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white/40 backdrop-blur-sm p-4 lg:p-6 rounded-2xl border border-slate-200/50 shadow-lg relative overflow-hidden group hover:border-blue-500/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] transition-all">
-              <div className="absolute top-0 left-0 w-1 h-full bg-blue-500 group-hover:w-1.5 transition-all"></div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-blue-500/10 rounded-lg group-hover:bg-blue-500/20 transition-colors">
-                  <Users className="w-5 h-5 lg:w-6 lg:h-6 text-blue-400" />
-                </div>
-                <h3 className="text-slate-500 text-xs lg:text-sm font-semibold uppercase tracking-wider">Total Contacts</h3>
-              </div>
-              <p className="text-3xl lg:text-4xl font-bold text-slate-800 mt-2">{stats.totalContacts}</p>
-            </div>
-            <div className="bg-white/40 backdrop-blur-sm p-4 lg:p-6 rounded-2xl border border-slate-200/50 shadow-lg relative overflow-hidden group hover:border-blue-500/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.15)] transition-all">
-              <div className="absolute top-0 left-0 w-1 h-full bg-purple-500 group-hover:w-1.5 transition-all"></div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-purple-500/10 rounded-lg group-hover:bg-purple-500/20 transition-colors">
-                  <Briefcase className="w-5 h-5 lg:w-6 lg:h-6 text-blue-600" />
-                </div>
-                <h3 className="text-slate-500 text-xs lg:text-sm font-semibold uppercase tracking-wider">Categories</h3>
-              </div>
-              <p className="text-3xl lg:text-4xl font-bold text-slate-800 mt-2">{stats.totalCategories}</p>
-            </div>
-            <div className="bg-white/40 backdrop-blur-sm p-4 lg:p-6 rounded-2xl border border-slate-200/50 shadow-lg relative overflow-hidden group hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all">
-              <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500 group-hover:w-1.5 transition-all"></div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-emerald-500/20 transition-colors">
-                  <Building2 className="w-5 h-5 lg:w-6 lg:h-6 text-emerald-400" />
-                </div>
-                <h3 className="text-slate-500 text-xs lg:text-sm font-semibold uppercase tracking-wider">Cities</h3>
-              </div>
-              <p className="text-3xl lg:text-4xl font-bold text-slate-800 mt-2">{stats.totalCities}</p>
-            </div>
-            <div className="bg-white/40 backdrop-blur-sm p-4 lg:p-6 rounded-2xl border border-slate-200/50 shadow-lg relative overflow-hidden group hover:border-orange-500/50 hover:shadow-[0_0_20px_rgba(249,115,22,0.15)] transition-all">
-              <div className="absolute top-0 left-0 w-1 h-full bg-orange-500 group-hover:w-1.5 transition-all"></div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-orange-500/10 rounded-lg group-hover:bg-orange-500/20 transition-colors">
-                  <MapPin className="w-5 h-5 lg:w-6 lg:h-6 text-orange-400" />
-                </div>
-                <h3 className="text-slate-500 text-xs lg:text-sm font-semibold uppercase tracking-wider">States</h3>
-              </div>
-              <p className="text-3xl lg:text-4xl font-bold text-slate-800 mt-2">{stats.totalStates}</p>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-bold text-slate-900 hidden md:block">Records</h2>
+            <div className="flex gap-2 w-full md:w-auto justify-end">
+              <button onClick={handleExport} className="flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg hover:bg-emerald-100 transition-colors shadow-sm flex-1 md:flex-none">
+                <Download className="w-4 h-4" />
+                <span>Export</span>
+              </button>
+              <button onClick={() => setIsBulkImportOpen(true)} className="flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors shadow-sm flex-1 md:flex-none">
+                <Upload className="w-4 h-4" />
+                <span>Import</span>
+              </button>
+              <button onClick={() => { setEditingContact(null); setIsFormOpen(true); }} className="flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm flex-1 md:flex-none">
+                <Plus className="w-4 h-4" />
+                <span>Add Contact</span>
+              </button>
             </div>
           </div>
 
-          <div className="px-1 md:px-0">
+          <div className="md:hidden mb-6">
             <Filters filters={filters} setFilters={setFilters} contacts={contacts} />
           </div>
 
-          <div className="mt-4 md:mt-6 px-1 md:px-0">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <ContactTable 
               contacts={contacts} 
               loading={loading}
@@ -359,34 +404,37 @@ export default function App() {
                 setIsFormOpen(true);
               }}
               onDelete={handleDelete}
+              page={page}
+              itemsPerPage={ITEMS_PER_PAGE}
             />
             
             {/* Pagination Controls */}
             {!loading && totalCount > 0 && (
-              <div className="flex items-center justify-between mt-4 px-4 py-3 bg-white/40 backdrop-blur-sm border border-slate-200/50 rounded-xl">
-                <span className="text-sm text-slate-500">
-                  Showing {page * ITEMS_PER_PAGE + 1} to {Math.min((page + 1) * ITEMS_PER_PAGE, totalCount)} of <span className="font-semibold text-slate-800">{totalCount}</span> entries
+              <div className="flex items-center justify-between px-6 py-4 bg-slate-50 border-t border-slate-200">
+                <span className="text-sm text-slate-600">
+                  Showing <span className="font-medium text-slate-900">{page * ITEMS_PER_PAGE + 1}</span> to <span className="font-medium text-slate-900">{Math.min((page + 1) * ITEMS_PER_PAGE, totalCount)}</span> of <span className="font-medium text-slate-900">{totalCount}</span> results
                 </span>
-                <div className="flex items-center gap-2">
+                <div className="flex gap-2">
                   <button 
                     onClick={() => setPage(p => Math.max(0, p - 1))}
                     disabled={page === 0}
-                    className="p-1.5 rounded-lg bg-slate-200/50 text-slate-600 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="p-2 bg-white rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-colors"
                   >
-                    <ChevronLeft className="w-5 h-5" />
+                    <ChevronLeft className="w-4 h-4" />
                   </button>
-                  <span className="text-sm font-medium px-2">Page {page + 1} of {totalPages}</span>
                   <button 
                     onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
                     disabled={page >= totalPages - 1}
-                    className="p-1.5 rounded-lg bg-slate-200/50 text-slate-600 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="p-2 bg-white rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-colors"
                   >
-                    <ChevronRight className="w-5 h-5" />
+                    <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
               </div>
             )}
           </div>
+          </>
+          )}
         </main>
       </div>
 
@@ -397,7 +445,7 @@ export default function App() {
             setEditingContact(null);
             setIsFormOpen(true);
           }}
-          className="md:hidden fixed bottom-[88px] right-4 bg-gradient-to-r from-blue-600 to-blue-700 text-slate-900 p-4 rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)] z-40 transition-transform active:scale-95"
+          className="md:hidden fixed bottom-[88px] right-4 bg-indigo-600 text-white p-4 rounded-full shadow-lg z-40 transition-transform active:scale-95"
         >
           <Plus className="w-6 h-6" />
         </button>
@@ -408,7 +456,7 @@ export default function App() {
         <div className="flex justify-around items-center p-3">
           <button 
             onClick={() => setFilters({...filters, status: 'all'})}
-            className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all text-blue-600 bg-purple-500/10`}
+            className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all text-indigo-600 bg-purple-500/10`}
           >
             <Users className="w-5 h-5" />
             <span className="text-[10px] font-medium">All Contacts</span>
@@ -445,14 +493,7 @@ export default function App() {
         />
       )}
 
-      {/* Settings Modal */}
-      {isSettingsOpen && (
-        <div className="fixed inset-0 bg-slate-50/80 backdrop-blur-sm z-50 flex items-center justify-center p-0 md:p-4 animate-in fade-in duration-200">
-          <div className="w-full h-full md:h-auto md:max-h-[90vh] md:max-w-xl bg-slate-50 border border-slate-200/50 md:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 md:slide-in-from-bottom-8 duration-300">
-            <SettingsModal onClose={() => setIsSettingsOpen(false)} />
-          </div>
-        </div>
-      )}
+
     </div>
   );
 }

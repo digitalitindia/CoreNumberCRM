@@ -47,11 +47,22 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
           setAllSettings(data);
           setAvailableStates(data.filter(s => s.setting_type === 'state').map(s => s.setting_value));
           setAvailableCategories(data.filter(s => s.setting_type === 'category').map(s => s.setting_value));
+          
+          // Apply dynamic defaults for new contacts
+          if (!initialData) {
+            const defState = data.find(s => s.setting_type === 'default_state')?.setting_value;
+            const defCity = data.find(s => s.setting_type === 'default_city')?.setting_value;
+            setFormData(prev => ({
+              ...prev,
+              state: prev.state || defState || 'Gujarat',
+              city: prev.city || defCity || 'Ahmedabad'
+            }));
+          }
         } else {
           // Fallback
           setAvailableStates(['Madhya Pradesh', 'Gujarat']);
           setAvailableCities(['Surat', 'Ahmedabad', 'Indore', 'Bhopal']);
-          setAvailableCategories(['IT', 'Doctor', 'Cafe', 'Car Dealer']);
+          setAvailableCategories(['Healthcare', 'Legal', 'Logistics', 'Finance', 'Education', 'Social Media', 'Media & OTT', 'Insurance', 'Travel', 'Retail', 'Manufacturing', 'Construction', 'Beauty & Lifestyle', 'Sports', 'On Demand', 'Marketplace', 'IT & Telecom', 'Automotive', 'Real Estate', 'Energy & Utilities', 'Agriculture', 'Government', 'Non-Profit', 'Hospitality', 'Food & Bev']);
           setAvailableTowns(['Andheri East', 'Bandra']);
         }
       } catch (err) {
@@ -142,17 +153,32 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
     setLoading(true);
 
     try {
+      let finalData = { ...formData };
+      
+      // Handle empty names per user request
+      if (!finalData.person_name.trim() || !finalData.business_name.trim()) {
+        const { count } = await supabase.from('contacts').select('*', { count: 'exact', head: true });
+        const nextId = (count || 0) + 1;
+        
+        if (!finalData.person_name.trim()) {
+          finalData.person_name = `UU-${nextId}`;
+        }
+        if (!finalData.business_name.trim()) {
+          finalData.business_name = `UB-${nextId}`;
+        }
+      }
+
       if (initialData) {
         const { error } = await supabase
           .from('contacts')
-          .update(formData)
+          .update(finalData)
           .eq('id', initialData.id);
         if (error) throw error;
         toast.success('Contact updated');
       } else {
         const { error } = await supabase
           .from('contacts')
-          .insert([formData]);
+          .insert([finalData]);
         if (error) {
           if (error.code === '23505') {
             throw new Error('This mobile number already exists in your contacts.');
@@ -174,7 +200,7 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
     <div className="flex flex-col h-full bg-slate-50 text-slate-800">
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/50 bg-slate-50/50 backdrop-blur-md sticky top-0 z-10">
-        <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r text-blue-700">
+        <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r text-indigo-700">
           {initialData ? 'Edit Contact' : 'New Contact'}
         </h2>
         <button 
@@ -212,9 +238,9 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
                 
                 {/* Visual Feedback Icons */}
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
-                  {checkingDuplicate && <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />}
+                  {checkingDuplicate && <Loader2 className="w-5 h-5 text-indigo-600 animate-spin" />}
                   {!checkingDuplicate && formData.mobile_number.length === 10 && !duplicateWarning && (
-                    <CheckCircle className="w-5 h-5 text-emerald-400" />
+                    <CheckCircle className="w-5 h-5 text-emerald-600" />
                   )}
                   {!checkingDuplicate && formData.mobile_number.length === 10 && duplicateWarning && (
                     <AlertCircle className="w-5 h-5 text-red-500" />
@@ -232,7 +258,7 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">
-                  Business Name
+                  Business
                 </label>
                 <input
                   type="text"
@@ -245,7 +271,7 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">
-                  Person Name
+                  Name
                 </label>
                 <input
                   type="text"

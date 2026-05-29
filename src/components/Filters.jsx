@@ -24,7 +24,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
           setCategories(data.filter(d => d.setting_type === 'category').map(d => d.setting_value));
           setStates(data.filter(d => d.setting_type === 'state').map(d => d.setting_value));
         } else {
-          setCategories(['IT', 'Doctor', 'Cafe', 'Car Dealer']); // Fallback
+          setCategories(['Healthcare', 'Legal', 'Logistics', 'Finance', 'Education', 'Social Media', 'Media & OTT', 'Insurance', 'Travel', 'Retail', 'Manufacturing', 'Construction', 'Beauty & Lifestyle', 'Sports', 'On Demand', 'Marketplace', 'IT & Telecom', 'Automotive', 'Real Estate', 'Energy & Utilities', 'Agriculture', 'Government', 'Non-Profit', 'Hospitality', 'Food & Bev']); // Fallback
           setStates(['Madhya Pradesh', 'Gujarat']);
           setCities(['Surat', 'Ahmedabad', 'Indore', 'Bhopal']);
           setTowns(['Andheri East', 'Bandra']);
@@ -89,7 +89,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
             <select
               value={filters.category}
               onChange={(e) => setFilters({...filters, category: e.target.value})}
-              className="w-full pl-9 pr-4 py-3 bg-white border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-500 text-slate-800 appearance-none cursor-pointer font-medium hover:border-slate-500 transition-colors"
+              className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-800 appearance-none cursor-pointer font-medium hover:border-slate-300 transition-colors"
             >
               <option value="">All Categories</option>
               {categories.map(cat => (
@@ -106,7 +106,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
             <select
               value={filters.state}
               onChange={(e) => setFilters({...filters, state: e.target.value})}
-              className="w-full pl-9 pr-4 py-3 bg-white border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-500 text-slate-800 appearance-none cursor-pointer font-medium hover:border-slate-500 transition-colors"
+              className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-800 appearance-none cursor-pointer font-medium hover:border-slate-300 transition-colors"
             >
               <option value="">All States</option>
               {states.map(state => (
@@ -123,7 +123,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
             <select
               value={filters.city}
               onChange={(e) => setFilters({...filters, city: e.target.value})}
-              className="w-full pl-9 pr-4 py-3 bg-white border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-500 text-slate-800 appearance-none cursor-pointer font-medium hover:border-slate-500 transition-colors"
+              className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-800 appearance-none cursor-pointer font-medium hover:border-slate-300 transition-colors"
             >
               <option value="">All Cities</option>
               {cities.map(city => (
@@ -140,7 +140,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
             <select
               value={filters.town}
               onChange={(e) => setFilters({...filters, town: e.target.value})}
-              className="w-full pl-9 pr-4 py-3 bg-white border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-500 text-slate-800 appearance-none cursor-pointer font-medium hover:border-slate-500 transition-colors"
+              className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-800 appearance-none cursor-pointer font-medium hover:border-slate-300 transition-colors"
             >
               <option value="">All Towns</option>
               {towns.map(town => (
@@ -163,7 +163,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
               startDate: '',
               endDate: ''
             })}
-            className="mt-2 text-sm font-bold text-slate-600 hover:text-slate-900 flex items-center justify-center gap-2 bg-white hover:bg-slate-100 px-4 py-3 rounded-xl transition-colors border-2 border-slate-200 hover:border-slate-500 w-full"
+            className="mt-2 text-sm font-bold text-slate-600 hover:text-slate-900 flex items-center justify-center gap-2 bg-white hover:bg-slate-100 px-4 py-3 rounded-xl transition-colors border border-slate-200 shadow-sm hover:border-slate-300 w-full"
           >
             <X className="w-4 h-4" /> Clear Filters
           </button>
@@ -173,7 +173,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
   }
 
   return (
-    <div className="md:hidden bg-white/40 backdrop-blur-sm p-4 rounded-2xl shadow-lg border border-slate-200/50 mb-6 transition-all">
+    <div className="md:hidden bg-white/40 backdrop-blur-sm p-4 rounded-2xl shadow-sm border border-slate-200/50 mb-6 transition-all">
       <div className="flex flex-col gap-4 items-center justify-between">
         
         {/* Global Search */}
@@ -184,7 +184,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
             placeholder="Search contacts..."
             value={filters.search}
             onChange={(e) => setFilters({...filters, search: e.target.value})}
-            className="w-full pl-10 pr-4 py-3 bg-white border-2 border-slate-300 rounded-xl outline-none focus:border-blue-400 focus:ring-1 focus:ring-purple-400 transition-all text-slate-900 placeholder:text-slate-500 font-medium"
+            className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-xl outline-none focus:border-blue-400 focus:ring-1 focus:ring-purple-400 transition-all text-slate-900 placeholder:text-slate-500 font-medium"
           />
         </div>
 
@@ -192,7 +192,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
         <div className="flex w-full gap-3">
           <button 
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${showFilters ? 'bg-purple-500 text-slate-900 border-2 border-blue-400 shadow-md' : 'bg-white text-slate-800 hover:bg-slate-100 border-2 border-slate-300 hover:border-slate-400'}`}
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${showFilters ? 'bg-purple-500 text-slate-900 border-2 border-blue-400 shadow-md' : 'bg-white text-slate-800 hover:bg-slate-100 border border-slate-200 shadow-sm hover:border-slate-400'}`}
           >
             <Filter className="w-4 h-4" />
             <span>Filters</span>
@@ -219,7 +219,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
               <select
                 value={filters.category}
                 onChange={(e) => setFilters({...filters, category: e.target.value})}
-                className="w-full pl-9 pr-4 py-2.5 bg-white border-2 border-slate-300 rounded-xl text-sm outline-none focus:border-blue-400 text-slate-900 appearance-none cursor-pointer font-medium"
+                className="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-blue-400 text-slate-900 appearance-none cursor-pointer font-medium"
               >
                 <option value="">All Categories</option>
                 {categories.map(cat => (
@@ -237,7 +237,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
               <select
                 value={filters.timeRange}
                 onChange={(e) => setFilters({...filters, timeRange: e.target.value})}
-                className="w-full pl-9 pr-4 py-2.5 bg-white border-2 border-slate-300 rounded-xl text-sm outline-none focus:border-blue-400 text-slate-900 appearance-none cursor-pointer font-medium"
+                className="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-blue-400 text-slate-900 appearance-none cursor-pointer font-medium"
               >
                 <option value="all">All Time</option>
                 <option value="today">Today</option>
@@ -258,7 +258,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
                   type="date"
                   value={filters.startDate}
                   onChange={(e) => setFilters({...filters, startDate: e.target.value})}
-                  className="w-full px-3 py-2.5 bg-white border-2 border-slate-300 rounded-xl text-sm outline-none focus:border-blue-400 text-slate-900 font-medium"
+                  className="w-full px-3 py-2.5 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-blue-400 text-slate-900 font-medium"
                 />
               </div>
               <div>
@@ -267,7 +267,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
                   type="date"
                   value={filters.endDate}
                   onChange={(e) => setFilters({...filters, endDate: e.target.value})}
-                  className="w-full px-3 py-2.5 bg-white border-2 border-slate-300 rounded-xl text-sm outline-none focus:border-blue-400 text-slate-900 font-medium"
+                  className="w-full px-3 py-2.5 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-blue-400 text-slate-900 font-medium"
                 />
               </div>
             </div>
@@ -281,7 +281,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
               placeholder="Filter by state..."
               value={filters.state}
               onChange={(e) => setFilters({...filters, state: e.target.value})}
-              className="w-full px-4 py-2.5 bg-white border-2 border-slate-300 rounded-xl text-sm outline-none focus:border-blue-400 text-slate-900 placeholder:text-slate-500 font-medium"
+              className="w-full px-4 py-2.5 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-blue-400 text-slate-900 placeholder:text-slate-500 font-medium"
             />
           </div>
           
@@ -292,7 +292,7 @@ export default function Filters({ filters, setFilters, contacts, isSidebar = fal
               placeholder="Filter by city..."
               value={filters.city}
               onChange={(e) => setFilters({...filters, city: e.target.value})}
-              className="w-full px-4 py-2.5 bg-white border-2 border-slate-300 rounded-xl text-sm outline-none focus:border-blue-400 text-slate-900 placeholder:text-slate-500 font-medium"
+              className="w-full px-4 py-2.5 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-blue-400 text-slate-900 placeholder:text-slate-500 font-medium"
             />
           </div>
           

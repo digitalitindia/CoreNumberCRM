@@ -258,19 +258,6 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">
-                  Business
-                </label>
-                <input
-                  type="text"
-                  name="business_name"
-                  value={formData.business_name}
-                  onChange={handleChange}
-                  placeholder="e.g. Reliance Industries"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-slate-900 font-medium"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">
                   Name
                 </label>
                 <input
@@ -279,6 +266,19 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
                   value={formData.person_name}
                   onChange={handleChange}
                   placeholder="e.g. Rahul Sharma"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-slate-900 font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">
+                  Business
+                </label>
+                <input
+                  type="text"
+                  name="business_name"
+                  value={formData.business_name}
+                  onChange={handleChange}
+                  placeholder="e.g. Reliance Industries"
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-slate-900 font-medium"
                 />
               </div>

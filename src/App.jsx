@@ -478,14 +478,14 @@ export default function App() {
         </main>
       </div>
 
-      {/* Floating Action Button (Mobile Premium) */}
+      {/* Floating Action Button */}
       {!isFormOpen && (
         <button
           onClick={() => {
             setEditingContact(null);
             setIsFormOpen(true);
           }}
-          className="md:hidden fixed bottom-[88px] right-4 bg-indigo-600 text-white p-4 rounded-full shadow-lg z-40 transition-transform active:scale-95"
+          className="fixed bottom-[88px] md:bottom-8 right-4 md:right-8 bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl hover:bg-indigo-700 hover:-translate-y-1 z-40 transition-all duration-300 active:scale-95 group"
         >
           <Plus className="w-6 h-6" />
         </button>

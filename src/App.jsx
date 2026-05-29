@@ -47,6 +47,24 @@ export default function App() {
     }
   };
 
+  const handleGoHome = () => {
+    setFilters({
+      status: 'all',
+      timeRange: 'all',
+      state: '',
+      city: '',
+      town: '',
+      search: '',
+      startDate: '',
+      endDate: ''
+    });
+    setPage(0);
+    setIsFormOpen(false);
+    setEditingContact(null);
+    setIsSettingsOpen(false);
+    setIsBulkImportOpen(false);
+  };
+
   const handleExport = () => {
     const filtered = contacts.filter(contact => {
       if (filters.timeRange !== 'all' && contact.created_at) {
@@ -237,16 +255,16 @@ export default function App() {
       {/* Premium Clean Header */}
       <header className="sticky top-0 z-20 px-6 py-4 flex items-center justify-between gap-4 bg-white/80 backdrop-blur-xl border-b border-slate-200">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3 group">
+          <button onClick={handleGoHome} className="flex items-center gap-3 group text-left cursor-pointer outline-none rounded-xl focus:ring-2 focus:ring-indigo-500/30">
             <div className="bg-indigo-600 p-2.5 rounded-lg shadow-sm text-white group-hover:bg-indigo-700 transition-colors">
               <Users className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+              <h1 className="text-xl font-bold text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors">
                 CoreNumber CRM
               </h1>
             </div>
-          </div>
+          </button>
         </div>
 
         {/* Global Search Bar */}

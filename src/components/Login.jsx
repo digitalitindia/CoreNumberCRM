@@ -92,7 +92,7 @@ export default function Login({ onLogin }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-purple-500 text-slate-900 py-3.5 rounded-xl font-bold text-[15px] transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-sm shadow-purple-500/25 disabled:opacity-70 disabled:hover:scale-100 flex justify-center items-center h-12"
+              className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white py-3.5 rounded-xl font-bold text-[15px] transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-indigo-500/30 disabled:opacity-70 disabled:hover:scale-100 flex justify-center items-center h-12"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

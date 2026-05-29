@@ -156,11 +156,11 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                   {/* Name and Menu Button */}
                   <div className="flex justify-between items-start">
                     <div className="flex flex-col min-w-0 pr-2">
-                      <h3 className="font-bold text-slate-900 text-[15px] truncate">
+                      <h3 className="font-bold text-slate-900 text-[15px] truncate capitalize">
                         {displayName}
                       </h3>
                       {contact.business_name && contact.person_name && (
-                        <span className="text-[12px] text-slate-500 font-medium truncate">
+                        <span className="text-[12px] text-slate-500 font-medium truncate capitalize">
                           {contact.business_name}
                         </span>
                       )}
@@ -255,10 +255,10 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                         {displayName.charAt(0).toUpperCase()}
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-medium text-slate-800 text-sm leading-tight">{displayName}</span>
+                        <span className="font-medium text-slate-800 text-sm leading-tight capitalize">{displayName}</span>
                         <div className="flex items-center gap-1.5 mt-0.5">
                           {contact.business_name && contact.person_name && (
-                            <span className="text-[11px] text-slate-500 leading-tight">{contact.business_name}</span>
+                            <span className="text-[11px] text-slate-500 leading-tight capitalize">{contact.business_name}</span>
                           )}
                           {contact.category && (
                             <span className="text-[9px] font-bold tracking-wider px-1.5 py-0.5 bg-purple-500/20 text-indigo-600 rounded">
@@ -286,7 +286,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                       </div>
                     </div>
                   </td>
-                  <td className="px-3 py-2 text-xs text-slate-500 truncate max-w-[150px]">
+                  <td className="px-3 py-2 text-xs text-slate-500 truncate max-w-[150px] capitalize">
                     {[contact.town, contact.city, contact.state].filter(Boolean).join(', ')}
                   </td>
                   <td className="px-3 py-2">

@@ -174,6 +174,19 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
 
     try {
       let finalData = { ...formData };
+
+      // Helper to capitalize words
+      const capitalize = (str) => {
+        if (!str) return str;
+        return str.replace(/\b\w/g, char => char.toUpperCase());
+      };
+
+      // Capitalize specific fields before saving
+      finalData.person_name = capitalize(finalData.person_name);
+      finalData.business_name = capitalize(finalData.business_name);
+      finalData.town = capitalize(finalData.town);
+      finalData.city = capitalize(finalData.city);
+      finalData.state = capitalize(finalData.state);
       
       // Handle empty names per user request
       if (!finalData.person_name.trim() || !finalData.business_name.trim()) {
@@ -286,7 +299,7 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
                   value={formData.person_name}
                   onChange={handleChange}
                   placeholder="e.g. Rahul Sharma"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-slate-900 font-medium"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-slate-900 font-medium capitalize"
                 />
               </div>
               <div>
@@ -299,7 +312,7 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
                   value={formData.business_name}
                   onChange={handleChange}
                   placeholder="e.g. Reliance Industries"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-slate-900 font-medium"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-purple-500/30 outline-none transition-all placeholder:text-slate-500 text-slate-900 font-medium capitalize"
                 />
               </div>
             </div>

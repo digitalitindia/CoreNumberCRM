@@ -269,21 +269,21 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
               const serialNo = page * itemsPerPage + index + 1;
               return (
                 <tr key={contact.id} className="animate-fade-in-up even:bg-slate-50/60 hover:bg-indigo-50/60 transition-colors group cursor-default" style={{ animationDelay: `${index * 50}ms` }}>
-                  <td className="px-3 py-2 whitespace-nowrap text-center">
-                    <span className="text-sm font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
+                  <td className="px-3 py-1.5 whitespace-nowrap text-center">
+                    <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
                       {serialNo}
                     </span>
                   </td>
-                  <td className="px-3 py-3">
+                  <td className="px-3 py-1.5">
                     <div className="flex items-center gap-2">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${getAvatarColor(displayName)} shadow-sm`}>
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${getAvatarColor(displayName)} shadow-sm`}>
                         {avatarLetter}
                       </div>
                       <div className="flex flex-col">
                         <span className="font-medium text-slate-800 text-sm leading-tight capitalize">{displayName}</span>
                         <div className="flex items-center gap-1.5 mt-0.5">
                           {contact.business_name && contact.person_name && (
-                            <span className="text-[11px] text-slate-500 leading-tight capitalize">{contact.business_name}</span>
+                            <span className="text-[10px] text-slate-500 leading-tight capitalize">{contact.business_name}</span>
                           )}
                           {contact.category && (
                             <span className="px-1 py-[1px] text-[9px] font-bold rounded flex items-center gap-1 bg-purple-50 text-purple-700 border border-purple-200/60">
@@ -295,12 +295,12 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                       </div>
                     </div>
                   </td>
-                  <td className="px-3 py-2 text-sm font-medium text-slate-600">
+                  <td className="px-3 py-1.5 text-sm font-medium text-slate-600">
                     <div className="flex items-center gap-2">
-                      <a href={`tel:+91${contact.mobile_number}`} className="tracking-wide text-[13px] bg-slate-50 border border-slate-200 px-1.5 py-0.5 rounded text-slate-700 font-bold hover:bg-slate-100 hover:text-indigo-600 transition-colors">{contact.mobile_number}</a>
-                      <div className="flex gap-1.5 ml-2">
-                        <a href={`tel:+91${contact.mobile_number}`} className="p-1.5 bg-blue-50 hover:bg-blue-100 rounded text-blue-600 transition-colors" title="Call">
-                          <PhoneCall className="w-3.5 h-3.5" />
+                      <a href={`tel:+91${contact.mobile_number}`} className="tracking-wide text-[12px] bg-slate-50 border border-slate-200 px-1.5 py-0.5 rounded text-slate-700 font-bold hover:bg-slate-100 hover:text-indigo-600 transition-colors">{contact.mobile_number}</a>
+                      <div className="flex gap-1 ml-1">
+                        <a href={`tel:+91${contact.mobile_number}`} className="p-1 bg-blue-50 hover:bg-blue-100 rounded text-blue-600 transition-colors" title="Call">
+                          <PhoneCall className="w-3 h-3" />
                         </a>
                         <button onClick={() => handleCopy(contact.mobile_number)} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded text-slate-600 transition-colors" title="Copy">
                           <Copy className="w-3.5 h-3.5" />
@@ -311,19 +311,19 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                       </div>
                     </div>
                   </td>
-                  <td className="px-3 py-2 text-xs text-slate-500 truncate max-w-[150px] capitalize">
+                  <td className="px-3 py-1.5 text-xs text-slate-500 truncate max-w-[150px] capitalize">
                     {[contact.town, contact.city, contact.state].filter(Boolean).join(', ')}
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="px-3 py-1.5">
                     <div className="flex flex-col">
                       <span className="font-semibold text-slate-700 text-[13px]">{contact.created_at ? format(parseISO(contact.created_at), 'dd MMM yyyy') : 'N/A'}</span>
                       <span className="text-[10px] text-slate-400 font-medium">{contact.created_at ? format(parseISO(contact.created_at), 'hh:mm a') : ''}</span>
                     </div>
                   </td>
-                  <td className="px-3 py-2 text-xs text-slate-500 max-w-[120px] truncate" title={contact.notes}>
-                    {contact.notes || <span className="italic text-slate-300">--</span>}
+                  <td className="px-3 py-1.5 text-xs text-slate-500 truncate max-w-[120px]" title={contact.notes || ''}>
+                    {contact.notes || '--'}
                   </td>
-                  <td className="px-3 py-2 text-right">
+                  <td className="px-3 py-1.5 text-right whitespace-nowrap">
                     <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button onClick={() => onEdit(contact)} className="p-1.5 text-indigo-600 hover:bg-blue-500/20 rounded" title="Edit">
                         <Edit2 className="w-4 h-4" />

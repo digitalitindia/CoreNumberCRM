@@ -276,7 +276,7 @@ export default function App() {
       <Toaster position="top-center" toastOptions={{ style: { background: '#ffffff', color: '#0f172a', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' } }} />
 
       {/* Premium Clean Header */}
-      <header className="sticky top-0 z-20 px-6 py-4 flex items-center justify-between gap-4 bg-white/80 backdrop-blur-xl border-b border-slate-200">
+      <header className="sticky top-0 z-20 px-6 py-2.5 flex items-center justify-between gap-4 bg-white/80 backdrop-blur-xl border-b border-slate-200">
         <div className="flex items-center gap-2 md:gap-4">
           <button onClick={handleGoHome} className="flex items-center gap-2 md:gap-3 group text-left cursor-pointer outline-none rounded-xl focus:ring-2 focus:ring-indigo-500/30">
             <div className="bg-indigo-600 p-2 md:p-2.5 rounded-lg shadow-sm text-white group-hover:bg-indigo-700 transition-colors">
@@ -336,7 +336,7 @@ export default function App() {
 
       <div className="flex pb-20 md:pb-0 relative z-10 w-full">
         {/* Sidebar (Desktop Premium) */}
-        <aside className={`w-64 hidden md:flex flex-col gap-2 px-5 py-8 fixed h-full top-[73px] border-r border-slate-800 bg-slate-900 text-slate-300 transition-transform duration-300 ease-in-out z-20 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <aside className={`w-64 hidden md:flex flex-col gap-2 px-5 py-6 fixed h-full top-[61px] border-r border-slate-800 bg-slate-900 text-slate-300 transition-transform duration-300 ease-in-out z-20 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           <button
             onClick={() => {
               setEditingContact(null);
@@ -384,7 +384,7 @@ export default function App() {
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <button 
               onClick={() => setFilters({ ...filters, status: 'lead' })}
-              className={`bg-white p-4 rounded-xl border text-left shadow-sm flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1 w-full ${filters.status === 'lead' ? 'border-indigo-500 ring-2 ring-indigo-500/20 shadow-md' : 'border-slate-200 hover:border-indigo-300 hover:shadow-md'}`}>
+              className={`bg-white p-3 rounded-xl border text-left shadow-sm flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1 w-full ${filters.status === 'lead' ? 'border-indigo-500 ring-2 ring-indigo-500/20 shadow-md' : 'border-slate-200 hover:border-indigo-300 hover:shadow-md'}`}>
               <div className="flex items-center justify-between w-full mb-2">
                 <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider group-hover:text-indigo-600 transition-colors">Total Leads</h3>
                 <div className={`p-1 rounded transition-colors ${filters.status === 'lead' ? 'bg-indigo-600 text-white' : 'bg-indigo-50 text-indigo-600 group-hover:bg-indigo-100'}`}>
@@ -396,7 +396,7 @@ export default function App() {
             
             <button 
               onClick={() => setFilters({ ...filters, status: 'follow_up' })}
-              className={`bg-white p-4 rounded-xl border text-left shadow-sm flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1 w-full ${filters.status === 'follow_up' ? 'border-yellow-500 ring-2 ring-yellow-500/20 shadow-md' : 'border-slate-200 hover:border-yellow-300 hover:shadow-md'}`}>
+              className={`bg-white p-3 rounded-xl border text-left shadow-sm flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1 w-full ${filters.status === 'follow_up' ? 'border-yellow-500 ring-2 ring-yellow-500/20 shadow-md' : 'border-slate-200 hover:border-yellow-300 hover:shadow-md'}`}>
               <div className="flex items-center justify-between w-full mb-2">
                 <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider group-hover:text-yellow-600 transition-colors">Follow-ups</h3>
                 <div className={`p-1 rounded transition-colors ${filters.status === 'follow_up' ? 'bg-yellow-500 text-white' : 'bg-yellow-50 text-yellow-600 group-hover:bg-yellow-100'}`}>
@@ -408,7 +408,7 @@ export default function App() {
 
             <button 
               onClick={() => setFilters({ ...filters, status: 'converted' })}
-              className={`bg-white p-4 rounded-xl border text-left shadow-sm flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1 w-full ${filters.status === 'converted' ? 'border-green-500 ring-2 ring-green-500/20 shadow-md' : 'border-slate-200 hover:border-green-300 hover:shadow-md'}`}>
+              className={`bg-white p-3 rounded-xl border text-left shadow-sm flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1 w-full ${filters.status === 'converted' ? 'border-green-500 ring-2 ring-green-500/20 shadow-md' : 'border-slate-200 hover:border-green-300 hover:shadow-md'}`}>
               <div className="flex items-center justify-between w-full mb-2">
                 <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider group-hover:text-green-600 transition-colors">Converted</h3>
                 <div className={`p-1 rounded transition-colors ${filters.status === 'converted' ? 'bg-green-600 text-white' : 'bg-green-50 text-green-600 group-hover:bg-green-100'}`}>
@@ -420,7 +420,7 @@ export default function App() {
 
             <button 
               onClick={() => setFilters({ ...filters, status: 'all' })}
-              className={`bg-white p-4 rounded-xl border text-left shadow-sm flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1 w-full ${filters.status === 'all' || !filters.status ? 'border-blue-500 ring-2 ring-blue-500/20 shadow-md' : 'border-slate-200 hover:border-blue-300 hover:shadow-md'}`}>
+              className={`bg-white p-3 rounded-xl border text-left shadow-sm flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1 w-full ${filters.status === 'all' || !filters.status ? 'border-blue-500 ring-2 ring-blue-500/20 shadow-md' : 'border-slate-200 hover:border-blue-300 hover:shadow-md'}`}>
               <div className="flex items-center justify-between w-full mb-2">
                 <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider group-hover:text-blue-600 transition-colors">Total Database</h3>
                 <div className={`p-1 rounded transition-colors ${filters.status === 'all' || !filters.status ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-600 group-hover:bg-blue-100'}`}>
@@ -551,7 +551,7 @@ export default function App() {
             setEditingContact(null);
             setIsFormOpen(true);
           }}
-          className="fixed bottom-[88px] md:bottom-8 right-4 md:right-8 bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl hover:bg-indigo-700 hover:-translate-y-1 z-40 transition-all duration-300 active:scale-95 group"
+          className="fixed bottom-[88px] md:bottom-24 right-4 md:right-8 bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl hover:bg-indigo-700 hover:-translate-y-1 z-40 transition-all duration-300 active:scale-95 group"
         >
           <Plus className="w-6 h-6" />
         </button>

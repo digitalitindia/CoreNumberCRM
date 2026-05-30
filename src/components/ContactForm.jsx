@@ -181,12 +181,16 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
         return str.replace(/\b\w/g, char => char.toUpperCase());
       };
 
-      // Capitalize specific fields before saving
-      finalData.person_name = capitalize(finalData.person_name);
-      finalData.business_name = capitalize(finalData.business_name);
-      finalData.town = capitalize(finalData.town);
-      finalData.city = capitalize(finalData.city);
-      finalData.state = capitalize(finalData.state);
+      const truncate = (str, max) => str ? String(str).trim().slice(0, max) : '';
+
+      // Capitalize and truncate specific fields before saving
+      finalData.person_name = capitalize(truncate(finalData.person_name, 50));
+      finalData.business_name = capitalize(truncate(finalData.business_name, 100));
+      finalData.town = capitalize(truncate(finalData.town, 50)) || null;
+      finalData.city = capitalize(truncate(finalData.city, 50)) || null;
+      finalData.state = capitalize(truncate(finalData.state, 50)) || null;
+      finalData.category = truncate(finalData.category, 30) || null;
+      finalData.notes = truncate(finalData.notes, 200) || null;
       
       // Names will be saved as empty strings if left blank, saving DB space.
       // The frontend (ContactTable) will dynamically generate 'UU-XXXX' for display.

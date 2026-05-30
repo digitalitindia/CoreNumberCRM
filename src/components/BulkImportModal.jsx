@@ -62,15 +62,17 @@ export default function BulkImportModal({ onClose, onImportComplete }) {
           // Keep only last 10 digits if it has country code
           if (mobile.length > 10) mobile = mobile.slice(-10);
 
+          const truncate = (str, max) => str ? String(str).trim().slice(0, max) : '';
+
           return {
             mobile_number: mobile,
-            person_name: row['Person Name'] || row['person_name'] || null,
-            business_name: row['Business Name'] || row['business_name'] || 'Unknown Business',
-            category: row['Category'] || row['category'] || null,
-            state: row['State'] || row['state'] || null,
-            city: row['City'] || row['city'] || null,
-            town: row['Town'] || row['town'] || null,
-            notes: row['Notes'] || row['notes'] || null
+            person_name: truncate(row['Person Name'] || row['person_name'], 50),
+            business_name: truncate(row['Business Name'] || row['business_name'], 100),
+            category: truncate(row['Category'] || row['category'], 30) || null,
+            state: truncate(row['State'] || row['state'], 50) || null,
+            city: truncate(row['City'] || row['city'], 50) || null,
+            town: truncate(row['Town'] || row['town'], 50) || null,
+            notes: truncate(row['Notes'] || row['notes'], 200) || null
           };
         }).filter(r => r.mobile_number && r.mobile_number.length === 10); // Only keep valid numbers
 

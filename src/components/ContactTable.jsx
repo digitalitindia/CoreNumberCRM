@@ -42,7 +42,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
   };
 
   const getStatusBadge = (status) => {
-    const base = "px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded flex items-center gap-1 border";
+    const base = "px-1 py-[1px] text-[9px] font-bold rounded flex items-center gap-1 border";
     switch(status) {
       case 'follow_up': return <span className={`${base} bg-yellow-50 text-yellow-700 border-yellow-200/60`}>🟡 Follow-up</span>;
       case 'converted': return <span className={`${base} bg-emerald-50 text-emerald-700 border-emerald-200/60`}>🟢 Converted</span>;
@@ -196,7 +196,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                   {/* Badges */}
                   <div className="flex flex-wrap gap-1.5 mt-1.5">
                     {contact.category && (
-                      <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded flex items-center gap-1 bg-purple-50 text-purple-700 border border-purple-200/60">
+                      <span className="px-1 py-[1px] text-[9px] font-bold rounded flex items-center gap-1 bg-purple-50 text-purple-700 border border-purple-200/60">
                         💼 {contact.category}
                       </span>
                     )}
@@ -286,7 +286,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                             <span className="text-[11px] text-slate-500 leading-tight capitalize">{contact.business_name}</span>
                           )}
                           {contact.category && (
-                            <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded flex items-center gap-1 bg-purple-50 text-purple-700 border border-purple-200/60">
+                            <span className="px-1 py-[1px] text-[9px] font-bold rounded flex items-center gap-1 bg-purple-50 text-purple-700 border border-purple-200/60">
                               💼 {contact.category}
                             </span>
                           )}

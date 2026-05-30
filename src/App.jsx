@@ -278,6 +278,13 @@ export default function App() {
       {/* Premium Clean Header */}
       <header className="sticky top-0 z-20 px-6 py-4 flex items-center justify-between gap-4 bg-white/80 backdrop-blur-xl border-b border-slate-200">
         <div className="flex items-center gap-2 md:gap-4">
+          <button 
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="p-2 -ml-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg hidden md:block transition-colors"
+            title="Toggle Sidebar"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
           <button onClick={handleGoHome} className="flex items-center gap-2 md:gap-3 group text-left cursor-pointer outline-none rounded-xl focus:ring-2 focus:ring-indigo-500/30">
             <div className="bg-indigo-600 p-2 md:p-2.5 rounded-lg shadow-sm text-white group-hover:bg-indigo-700 transition-colors">
               <Users className="w-5 h-5" />
@@ -287,13 +294,6 @@ export default function App() {
                 CoreNumber CRM
               </h1>
             </div>
-          </button>
-          <button 
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg hidden md:block transition-colors"
-            title="Toggle Sidebar"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
           </button>
         </div>
 
@@ -336,7 +336,7 @@ export default function App() {
 
       <div className="flex pb-20 md:pb-0 relative z-10 w-full">
         {/* Sidebar (Desktop Premium) */}
-        <aside className={`w-64 hidden ${isSidebarOpen ? 'md:flex' : ''} flex-col gap-2 px-5 py-8 fixed h-full top-[73px] border-r border-slate-800 bg-slate-900 text-slate-300 transition-all`}>
+        <aside className={`w-64 hidden md:flex flex-col gap-2 px-5 py-8 fixed h-full top-[73px] border-r border-slate-800 bg-slate-900 text-slate-300 transition-transform duration-300 ease-in-out z-20 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           <button
             onClick={() => {
               setEditingContact(null);
@@ -375,7 +375,7 @@ export default function App() {
         </aside>
 
         {/* Main Content Area */}
-        <main className={`flex-1 ${isSidebarOpen ? 'md:ml-64' : ''} p-3 sm:p-6 md:p-8 w-full max-w-[100vw] overflow-hidden transition-all duration-300`}>
+        <main className={`flex-1 ${isSidebarOpen ? 'md:ml-64' : 'md:ml-0'} p-3 sm:p-6 md:p-8 w-full max-w-[100vw] overflow-hidden transition-all duration-300 ease-in-out`}>
           {isSettingsOpen ? (
             <SettingsPage currentUser={currentUser} onClose={() => setIsSettingsOpen(false)} />
           ) : (

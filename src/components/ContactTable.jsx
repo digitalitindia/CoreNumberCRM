@@ -159,7 +159,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
           const avatarLetter = (displayName.charAt(0) || 'U').toUpperCase();
           const serialNo = page * itemsPerPage + index + 1;
           return (
-            <div key={contact.id} className="animate-fade-in-up p-3 active:bg-slate-100 transition-colors border-b border-slate-200/50 last:border-0 hover:bg-slate-50">
+            <div key={contact.id} className="animate-fade-in-up p-3 active:bg-slate-100 transition-colors border-b border-slate-200/50 last:border-0 hover:bg-indigo-50/50 even:bg-slate-50/60">
               <div className="flex gap-3 relative pb-1">
                 {/* Left Column: Avatar & Serial */}
                 <div className="flex flex-col items-center gap-2 mt-1 shrink-0">
@@ -268,7 +268,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
               const avatarLetter = (displayName.charAt(0) || 'U').toUpperCase();
               const serialNo = page * itemsPerPage + index + 1;
               return (
-                <tr key={contact.id} className="animate-fade-in-up hover:bg-indigo-50/40 transition-colors group cursor-default" style={{ animationDelay: `${index * 50}ms` }}>
+                <tr key={contact.id} className="animate-fade-in-up even:bg-slate-50/60 hover:bg-indigo-50/60 transition-colors group cursor-default" style={{ animationDelay: `${index * 50}ms` }}>
                   <td className="px-3 py-2 whitespace-nowrap text-center">
                     <span className="text-sm font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
                       {serialNo}

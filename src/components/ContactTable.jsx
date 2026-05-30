@@ -178,11 +178,11 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                   {/* Name and Menu Button */}
                   <div className="flex justify-between items-start">
                     <div className="flex flex-col min-w-0 pr-2">
-                      <h3 className="font-bold text-slate-900 text-[15px] truncate capitalize">
+                      <h3 className="font-bold text-slate-900 text-[15px] truncate capitalize" title={displayName}>
                         {displayName}
                       </h3>
                       {contact.business_name && contact.person_name && (
-                        <span className="text-[12px] text-slate-500 font-medium truncate capitalize">
+                        <span className="text-[12px] text-slate-500 font-medium truncate capitalize" title={contact.business_name}>
                           {contact.business_name}
                         </span>
                       )}
@@ -213,9 +213,8 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                     </span>
                   </div>
 
-                  {/* Notes */}
                   {contact.notes && (
-                    <div className="mt-2 text-[11px] text-slate-500 bg-slate-50 p-2 rounded-lg border border-slate-100 italic line-clamp-2 leading-relaxed">
+                    <div className="mt-2 text-[11px] text-slate-500 bg-slate-50 p-2 rounded-lg border border-slate-100 italic line-clamp-2 leading-relaxed" title={contact.notes}>
                       <FileText className="w-3 h-3 inline mr-1 text-slate-400 -mt-0.5" />
                       {contact.notes}
                     </div>

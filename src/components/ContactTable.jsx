@@ -1,10 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Edit2, Trash2, Copy, MessageCircle, Loader2, MoreVertical, ArrowUpDown, PhoneCall, Calendar, FileText, Search } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { isToday, isThisWeek, isThisMonth, isThisYear, parseISO, format } from 'date-fns';
+import { supabase } from '../lib/supabase';
 
 export default function ContactTable({ contacts, loading, filters, onEdit, onDelete, page = 0, itemsPerPage = 50 }) {
   const [sortConfig, setSortConfig] = useState({ key: 'created_at', direction: 'desc' });
+  const [whatsappTemplate, setWhatsappTemplate] = useState('Hi {name}, ');
+
+  useEffect(() => {
+    const fetchWaTemplate = async () => {
+      try {
+        const { data } = await supabase.from('crm_settings').select('setting_value').eq('setting_type', 'whatsapp_template').maybeSingle();
+        if (data && data.setting_value) {
+          setWhatsappTemplate(data.setting_value);
+        }
+      } catch (e) {
+        console.error('Failed to fetch WA template', e);
+      }
+    };
+    fetchWaTemplate();
+  }, []);
 
   const handleSort = (key) => {
     setSortConfig(current => ({
@@ -17,8 +33,11 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
     toast.success('Number copied to clipboard');
   };
 
-  const handleWhatsApp = (number, name) => {
-    const text = encodeURIComponent(`Hi ${name}, `);
+  const handleWhatsApp = (number, name, business) => {
+    let finalMsg = whatsappTemplate
+      .replace(/\{name\}/gi, name || '')
+      .replace(/\{business\}/gi, business || '');
+    const text = encodeURIComponent(finalMsg);
     window.open(`https://wa.me/91${number}?text=${text}`, '_blank');
   };
 
@@ -204,7 +223,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                       <a href={`tel:+91${contact.mobile_number}`} className="flex-1 flex justify-center items-center gap-1 p-2 bg-blue-50 hover:bg-blue-100 rounded-lg text-blue-600 transition-colors text-[12px] font-bold shadow-sm" title="Call">
                         <PhoneCall className="w-3.5 h-3.5" /> Call
                       </a>
-                      <button onClick={() => handleWhatsApp(contact.mobile_number, displayName)} className="flex-1 flex justify-center items-center gap-1 p-2 bg-green-50 hover:bg-green-100 rounded-lg text-green-600 transition-colors text-[12px] font-bold shadow-sm" title="WhatsApp">
+                      <button onClick={() => handleWhatsApp(contact.mobile_number, displayName, contact.business_name)} className="flex-1 flex justify-center items-center gap-1 p-2 bg-green-50 hover:bg-green-100 rounded-lg text-green-600 transition-colors text-[12px] font-bold shadow-sm" title="WhatsApp">
                         <MessageCircle className="w-3.5 h-3.5" /> Chat
                       </button>
                       <button onClick={() => handleCopy(contact.mobile_number)} className="p-2 px-3 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600 transition-colors shadow-sm" title="Copy">
@@ -280,7 +299,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                         <button onClick={() => handleCopy(contact.mobile_number)} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded text-slate-600 transition-colors" title="Copy">
                           <Copy className="w-3.5 h-3.5" />
                         </button>
-                        <button onClick={() => handleWhatsApp(contact.mobile_number, displayName)} className="p-1.5 bg-green-50 hover:bg-green-100 rounded text-green-600 transition-colors" title="WhatsApp">
+                        <button onClick={() => handleWhatsApp(contact.mobile_number, displayName, contact.business_name)} className="p-1.5 bg-green-50 hover:bg-green-100 rounded text-green-600 transition-colors" title="WhatsApp">
                           <MessageCircle className="w-3.5 h-3.5" />
                         </button>
                       </div>

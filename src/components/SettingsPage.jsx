@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { X, Plus, MapPin, Building2, Briefcase, Loader2, Home, Edit2, Check, Users } from 'lucide-react';
+import { X, Plus, MapPin, Building2, Briefcase, Loader2, Home, Edit2, Check, Users, MessageCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
 
@@ -25,6 +25,10 @@ export default function SettingsPage({ currentUser, onClose }) {
   const [newPassword, setNewPassword] = useState('');
   const [adminActionLoading, setAdminActionLoading] = useState(false);
 
+  // WhatsApp Tab States
+  const [whatsappTemplate, setWhatsappTemplate] = useState('Hi {name}, ');
+  const [savingTemplate, setSavingTemplate] = useState(false);
+
   const fetchSettings = useCallback(async () => {
     try {
       const { data, error } = await supabase
@@ -44,6 +48,11 @@ export default function SettingsPage({ currentUser, onClose }) {
       setStates(data.filter(s => s.setting_type === 'state'));
       setCities(data.filter(s => s.setting_type === 'city' || s.setting_type.startsWith('city_')));
       setTowns(data.filter(s => s.setting_type === 'town' || s.setting_type.startsWith('town_')));
+      
+      const waTemplateData = data.find(s => s.setting_type === 'whatsapp_template');
+      if (waTemplateData) {
+        setWhatsappTemplate(waTemplateData.setting_value);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -113,6 +122,26 @@ export default function SettingsPage({ currentUser, onClose }) {
       toast.error(err.message || 'Failed to update password. Did you run the SQL script?');
     } finally {
       setAdminActionLoading(false);
+    }
+  };
+
+  const saveWhatsappTemplate = async () => {
+    setSavingTemplate(true);
+    try {
+      const { data: existing } = await supabase.from('crm_settings').select('id').eq('setting_type', 'whatsapp_template').maybeSingle();
+      if (existing) {
+        const { error } = await supabase.from('crm_settings').update({ setting_value: whatsappTemplate }).eq('id', existing.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('crm_settings').insert([{ setting_type: 'whatsapp_template', setting_value: whatsappTemplate }]);
+        if (error) throw error;
+      }
+      toast.success('WhatsApp template saved!');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to save template');
+    } finally {
+      setSavingTemplate(false);
     }
   };
 
@@ -299,6 +328,12 @@ export default function SettingsPage({ currentUser, onClose }) {
               >
                 <Home className="w-4 h-4" /> Towns
               </button>
+              <button
+                onClick={() => setActiveTab('whatsapp')}
+                className={`flex-1 min-w-[120px] py-2.5 px-4 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'whatsapp' ? 'bg-green-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
+              >
+                <MessageCircle className="w-4 h-4" /> WhatsApp
+              </button>
             </div>
 
             {activeTab === 'users' && (
@@ -409,7 +444,45 @@ GRANT SELECT ON public.app_users TO authenticated;`}
               </div>
             )}
 
-            {activeTab !== 'users' && (
+            {activeTab === 'whatsapp' && (
+              <div className="flex flex-col h-full">
+                <div className="bg-white border border-slate-200 rounded-xl p-5 md:p-8 flex-1">
+                  <div className="mb-6">
+                    <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                      <MessageCircle className="w-5 h-5 text-green-500" /> WhatsApp Message Template
+                    </h3>
+                    <p className="text-sm text-slate-500 mt-1">Configure the default message sent when you click the WhatsApp button on a contact.</p>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 text-sm text-slate-600">
+                    <p className="font-bold text-slate-700 mb-2">Available Smart Variables:</p>
+                    <ul className="space-y-1 font-mono text-xs">
+                      <li><span className="bg-white px-1.5 py-0.5 border border-slate-200 rounded text-indigo-600">{"{name}"}</span> - The contact's person name</li>
+                      <li><span className="bg-white px-1.5 py-0.5 border border-slate-200 rounded text-indigo-600">{"{business}"}</span> - The contact's business name</li>
+                    </ul>
+                  </div>
+
+                  <textarea
+                    value={whatsappTemplate}
+                    onChange={(e) => setWhatsappTemplate(e.target.value)}
+                    rows={6}
+                    placeholder="E.g. Hi {name}, we noticed you are from {business}..."
+                    className="w-full p-4 bg-white border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all text-slate-800 resize-none shadow-sm mb-4"
+                  />
+
+                  <button
+                    onClick={saveWhatsappTemplate}
+                    disabled={savingTemplate}
+                    className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-colors flex items-center gap-2 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {savingTemplate ? <Loader2 className="w-5 h-5 animate-spin" /> : <Check className="w-5 h-5" />}
+                    Save Template
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {activeTab !== 'users' && activeTab !== 'whatsapp' && (
               <>
             {/* Input Form */}
             <form onSubmit={addSetting} className="flex flex-col gap-3 mb-4">

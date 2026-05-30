@@ -190,14 +190,13 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
       
       // Handle empty names per user request
       if (!finalData.person_name.trim() || !finalData.business_name.trim()) {
-        const { count } = await supabase.from('contacts').select('*', { count: 'exact', head: true });
-        const nextId = (count || 0) + 1;
+        const uniqueId = Math.floor(10000 + Math.random() * 90000); // 5 digit random number
         
         if (!finalData.person_name.trim()) {
-          finalData.person_name = `UU-${nextId}`;
+          finalData.person_name = `UU-${uniqueId}`;
         }
         if (!finalData.business_name.trim()) {
-          finalData.business_name = `UB-${nextId}`;
+          finalData.business_name = `UB-${uniqueId}`;
         }
       }
 

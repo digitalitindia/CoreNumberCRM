@@ -374,45 +374,53 @@ export default function App() {
             <>
               {/* Detailed Stats Cards */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-indigo-300 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-default">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Leads</h3>
-                <div className="p-1 bg-indigo-50 text-indigo-600 rounded">
+            <button 
+              onClick={() => setFilters({ ...filters, status: 'lead' })}
+              className={`bg-white p-4 rounded-xl border text-left shadow-sm flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1 w-full ${filters.status === 'lead' ? 'border-indigo-500 ring-2 ring-indigo-500/20 shadow-md' : 'border-slate-200 hover:border-indigo-300 hover:shadow-md'}`}>
+              <div className="flex items-center justify-between w-full mb-2">
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider group-hover:text-indigo-600 transition-colors">Total Leads</h3>
+                <div className={`p-1 rounded transition-colors ${filters.status === 'lead' ? 'bg-indigo-600 text-white' : 'bg-indigo-50 text-indigo-600 group-hover:bg-indigo-100'}`}>
                   <Users className="w-4 h-4" />
                 </div>
               </div>
               <p className="text-2xl font-bold text-slate-900">{stats.leads || 0}</p>
-            </div>
+            </button>
             
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-yellow-300 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-default">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Follow-ups</h3>
-                <div className="p-1 bg-yellow-50 text-yellow-600 rounded">
+            <button 
+              onClick={() => setFilters({ ...filters, status: 'follow_up' })}
+              className={`bg-white p-4 rounded-xl border text-left shadow-sm flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1 w-full ${filters.status === 'follow_up' ? 'border-yellow-500 ring-2 ring-yellow-500/20 shadow-md' : 'border-slate-200 hover:border-yellow-300 hover:shadow-md'}`}>
+              <div className="flex items-center justify-between w-full mb-2">
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider group-hover:text-yellow-600 transition-colors">Follow-ups</h3>
+                <div className={`p-1 rounded transition-colors ${filters.status === 'follow_up' ? 'bg-yellow-500 text-white' : 'bg-yellow-50 text-yellow-600 group-hover:bg-yellow-100'}`}>
                   <Phone className="w-4 h-4" />
                 </div>
               </div>
               <p className="text-2xl font-bold text-slate-900">{stats.followUps || 0}</p>
-            </div>
+            </button>
 
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-green-300 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-default">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Converted</h3>
-                <div className="p-1 bg-green-50 text-green-600 rounded">
+            <button 
+              onClick={() => setFilters({ ...filters, status: 'converted' })}
+              className={`bg-white p-4 rounded-xl border text-left shadow-sm flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1 w-full ${filters.status === 'converted' ? 'border-green-500 ring-2 ring-green-500/20 shadow-md' : 'border-slate-200 hover:border-green-300 hover:shadow-md'}`}>
+              <div className="flex items-center justify-between w-full mb-2">
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider group-hover:text-green-600 transition-colors">Converted</h3>
+                <div className={`p-1 rounded transition-colors ${filters.status === 'converted' ? 'bg-green-600 text-white' : 'bg-green-50 text-green-600 group-hover:bg-green-100'}`}>
                   <CheckCircle className="w-4 h-4" />
                 </div>
               </div>
               <p className="text-2xl font-bold text-slate-900">{stats.converted || 0}</p>
-            </div>
+            </button>
 
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-blue-300 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-default">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Database</h3>
-                <div className="p-1 bg-blue-50 text-blue-600 rounded">
+            <button 
+              onClick={() => setFilters({ ...filters, status: 'all' })}
+              className={`bg-white p-4 rounded-xl border text-left shadow-sm flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1 w-full ${filters.status === 'all' || !filters.status ? 'border-blue-500 ring-2 ring-blue-500/20 shadow-md' : 'border-slate-200 hover:border-blue-300 hover:shadow-md'}`}>
+              <div className="flex items-center justify-between w-full mb-2">
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider group-hover:text-blue-600 transition-colors">Total Database</h3>
+                <div className={`p-1 rounded transition-colors ${filters.status === 'all' || !filters.status ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-600 group-hover:bg-blue-100'}`}>
                   <Database className="w-4 h-4" />
                 </div>
               </div>
               <p className="text-2xl font-bold text-slate-900">{stats.total || 0}</p>
-            </div>
+            </button>
           </div>
 
           <div className="flex justify-between items-center mb-4">

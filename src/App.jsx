@@ -423,17 +423,46 @@ export default function App() {
             </button>
           </div>
 
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold text-slate-900 hidden md:block">Records</h2>
-            <div className="flex gap-2 w-full md:w-auto justify-end">
-              <button onClick={handleExport} className="flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg hover:bg-emerald-100 transition-colors shadow-sm flex-1 md:flex-none">
-                <Download className="w-4 h-4" />
-                <span>Export</span>
-              </button>
-              <button onClick={() => setIsBulkImportOpen(true)} className="flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors shadow-sm flex-1 md:flex-none">
-                <Upload className="w-4 h-4" />
-                <span>Import</span>
-              </button>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+            <h2 className="text-lg font-bold text-slate-900 hidden lg:block">Records</h2>
+            
+            <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-end">
+              {/* Top Time Range Filter */}
+              <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg p-0.5 shadow-sm shrink-0">
+                <Calendar className="w-4 h-4 text-slate-400 ml-2" />
+                <select
+                  value={filters.timeRange}
+                  onChange={(e) => setFilters({...filters, timeRange: e.target.value})}
+                  className="pl-1 pr-6 py-1 text-sm font-bold bg-transparent text-slate-700 appearance-none outline-none cursor-pointer hover:text-indigo-600 transition-colors"
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.2rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
+                >
+                  <option value="all">All Time</option>
+                  <option value="today">Today</option>
+                  <option value="week">This Week</option>
+                  <option value="month">This Month</option>
+                  <option value="year">This Year</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </div>
+
+              {filters.timeRange === 'custom' && (
+                <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-lg p-0.5 shadow-sm shrink-0">
+                   <input type="date" value={filters.startDate} onChange={e => setFilters({...filters, startDate: e.target.value})} className="text-xs font-medium px-2 py-1 outline-none text-slate-700 bg-transparent" />
+                   <span className="text-slate-300 font-bold">-</span>
+                   <input type="date" value={filters.endDate} onChange={e => setFilters({...filters, endDate: e.target.value})} className="text-xs font-medium px-2 py-1 outline-none text-slate-700 bg-transparent" />
+                </div>
+              )}
+
+              <div className="flex gap-2 flex-1 sm:flex-none">
+                <button onClick={handleExport} className="flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg hover:bg-emerald-100 transition-colors shadow-sm flex-1 sm:flex-none">
+                  <Download className="w-4 h-4" />
+                  <span>Export</span>
+                </button>
+                <button onClick={() => setIsBulkImportOpen(true)} className="flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-bold bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors shadow-sm flex-1 sm:flex-none">
+                  <Upload className="w-4 h-4" />
+                  <span>Import</span>
+                </button>
+              </div>
             </div>
           </div>
 

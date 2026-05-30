@@ -80,48 +80,7 @@ export default function Filters({ filters, setFilters, isSidebar = false }) {
           </div>
         </div>
         
-        {/* Time Range Filter */}
-        <div>
-          <div className="relative">
-            <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <select
-              value={filters.timeRange}
-              onChange={(e) => setFilters({...filters, timeRange: e.target.value})}
-              className="w-full pl-9 pr-4 py-3 bg-slate-800/50 border border-slate-700 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-200 appearance-none cursor-pointer font-medium hover:border-slate-600 transition-colors"
-            >
-              <option value="all" className="bg-slate-800 text-slate-200">All Time</option>
-              <option value="today" className="bg-slate-800 text-slate-200">Today</option>
-              <option value="week" className="bg-slate-800 text-slate-200">This Week</option>
-              <option value="month" className="bg-slate-800 text-slate-200">This Month</option>
-              <option value="year" className="bg-slate-800 text-slate-200">This Year</option>
-              <option value="custom" className="bg-slate-800 text-slate-200">Custom Range</option>
-            </select>
-          </div>
-        </div>
 
-        {/* Custom Date Inputs */}
-        {filters.timeRange === 'custom' && (
-          <div className="flex flex-col gap-3">
-            <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 pl-1">Start Date</label>
-              <input
-                type="date"
-                value={filters.startDate}
-                onChange={(e) => setFilters({...filters, startDate: e.target.value})}
-                className="w-full px-4 py-2.5 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-800 font-medium hover:border-slate-300 transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 pl-1">End Date</label>
-              <input
-                type="date"
-                value={filters.endDate}
-                onChange={(e) => setFilters({...filters, endDate: e.target.value})}
-                className="w-full px-4 py-2.5 bg-white border border-slate-200 shadow-sm rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-slate-800 font-medium hover:border-slate-300 transition-colors"
-              />
-            </div>
-          </div>
-        )}
 
         {/* Pipeline Status Filter */}
         <div>

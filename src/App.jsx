@@ -4,7 +4,7 @@ import ContactForm from './components/ContactForm';
 import ContactTable from './components/ContactTable';
 import Filters from './components/Filters';
 import BulkImportModal from './components/BulkImportModal';
-import { Plus, Search, LogOut, Users, Settings, Upload, Download, AlertCircle, ChevronLeft, ChevronRight, Phone, CheckCircle, Database, Calendar, Menu } from 'lucide-react';
+import { Plus, Search, LogOut, Users, Settings, Upload, Download, AlertCircle, ChevronLeft, ChevronRight, Phone, CheckCircle, Database, Calendar, PanelLeft } from 'lucide-react';
 import { toast, Toaster } from 'react-hot-toast';
 import * as XLSX from 'xlsx';
 import { isToday, isThisWeek, isThisMonth, isThisYear, parseISO } from 'date-fns';
@@ -290,10 +290,10 @@ export default function App() {
           </button>
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 lg:p-2.5 text-slate-600 bg-white border border-slate-200 shadow-sm hover:shadow hover:border-indigo-300 hover:text-indigo-600 rounded-xl hidden md:flex items-center justify-center transition-all duration-200 focus:ring-2 focus:ring-indigo-500/30 active:scale-95"
+            className="p-2 lg:p-2.5 text-slate-600 bg-slate-100/70 hover:bg-slate-200/80 rounded-xl hidden md:flex items-center justify-center transition-all duration-200 focus:ring-2 focus:ring-indigo-500/30 active:scale-95"
             title="Toggle Sidebar"
           >
-            <Menu className="w-4 h-4 lg:w-5 lg:h-5" />
+            <PanelLeft className="w-5 h-5" strokeWidth={2.5} />
           </button>
         </div>
 

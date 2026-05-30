@@ -4,7 +4,7 @@ import ContactForm from './components/ContactForm';
 import ContactTable from './components/ContactTable';
 import Filters from './components/Filters';
 import BulkImportModal from './components/BulkImportModal';
-import { Plus, Search, LogOut, Users, Settings, Upload, Download, AlertCircle, ChevronLeft, ChevronRight, Phone, CheckCircle, Database } from 'lucide-react';
+import { Plus, Search, LogOut, Users, Settings, Upload, Download, AlertCircle, ChevronLeft, ChevronRight, Phone, CheckCircle, Database, Calendar } from 'lucide-react';
 import { toast, Toaster } from 'react-hot-toast';
 import * as XLSX from 'xlsx';
 import { isToday, isThisWeek, isThisMonth, isThisYear, parseISO } from 'date-fns';

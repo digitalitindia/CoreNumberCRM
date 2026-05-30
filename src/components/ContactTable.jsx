@@ -153,7 +153,10 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
       {/* Mobile View */}
       <div className="md:hidden divide-y divide-slate-200">
         {sortedContacts.map((contact, index) => {
-          const displayName = contact.person_name || contact.business_name || 'Unknown Contact';
+          const pName = contact.person_name?.trim();
+          const bName = contact.business_name?.trim();
+          const displayName = pName || bName || `UU-${contact.mobile_number?.slice(-4) || 'XXXX'}`;
+          const avatarLetter = (displayName.charAt(0) || 'U').toUpperCase();
           const serialNo = page * itemsPerPage + index + 1;
           return (
             <div key={contact.id} className="animate-fade-in-up p-3 active:bg-slate-100 transition-colors border-b border-slate-200/50 last:border-0 hover:bg-slate-50">
@@ -162,7 +165,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                 <div className="flex flex-col items-center gap-2 mt-1 shrink-0">
                   <div className="w-10 h-10 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 flex flex-col items-center justify-center shadow-sm">
                     <span className="text-sm font-bold text-slate-900">
-                      {displayName.charAt(0).toUpperCase()}
+                      {avatarLetter}
                     </span>
                   </div>
                   <div className="flex items-center justify-center text-[10px] font-bold text-slate-400 bg-slate-100 rounded-md px-1.5 py-0.5">
@@ -259,7 +262,10 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
           </thead>
           <tbody className="divide-y divide-slate-200">
             {sortedContacts.map((contact, index) => {
-              const displayName = contact.person_name || contact.business_name || 'Unknown Contact';
+              const pName = contact.person_name?.trim();
+              const bName = contact.business_name?.trim();
+              const displayName = pName || bName || `UU-${contact.mobile_number?.slice(-4) || 'XXXX'}`;
+              const avatarLetter = (displayName.charAt(0) || 'U').toUpperCase();
               const serialNo = page * itemsPerPage + index + 1;
               return (
                 <tr key={contact.id} className="animate-fade-in-up hover:bg-indigo-50/40 transition-colors group cursor-default" style={{ animationDelay: `${index * 50}ms` }}>
@@ -271,7 +277,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                   <td className="px-3 py-3">
                     <div className="flex items-center gap-2">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${getAvatarColor(displayName)} shadow-sm`}>
-                        {displayName.charAt(0).toUpperCase()}
+                        {avatarLetter}
                       </div>
                       <div className="flex flex-col">
                         <span className="font-medium text-slate-800 text-sm leading-tight capitalize">{displayName}</span>

@@ -188,17 +188,8 @@ export default function ContactForm({ initialData, onClose, onSuccess }) {
       finalData.city = capitalize(finalData.city);
       finalData.state = capitalize(finalData.state);
       
-      // Handle empty names per user request
-      if (!finalData.person_name.trim() || !finalData.business_name.trim()) {
-        const uniqueId = Math.floor(10000 + Math.random() * 90000); // 5 digit random number
-        
-        if (!finalData.person_name.trim()) {
-          finalData.person_name = `UU-${uniqueId}`;
-        }
-        if (!finalData.business_name.trim()) {
-          finalData.business_name = `UB-${uniqueId}`;
-        }
-      }
+      // Names will be saved as empty strings if left blank, saving DB space.
+      // The frontend (ContactTable) will dynamically generate 'UU-XXXX' for display.
 
       if (initialData) {
         const { error } = await supabase

@@ -311,7 +311,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                       </div>
                     </div>
                   </td>
-                  <td className="px-3 py-1.5 text-xs text-slate-500 truncate max-w-[150px] capitalize">
+                  <td className="px-3 py-1.5 text-xs text-slate-500 truncate max-w-[150px] capitalize" title={[contact.town, contact.city, contact.state].filter(Boolean).join(', ')}>
                     {[contact.town, contact.city, contact.state].filter(Boolean).join(', ')}
                   </td>
                   <td className="px-3 py-1.5">

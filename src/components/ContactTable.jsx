@@ -42,11 +42,12 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
   };
 
   const getStatusBadge = (status) => {
+    const base = "px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded flex items-center gap-1 border";
     switch(status) {
-      case 'follow_up': return <span className="px-2 py-0.5 text-[10px] font-bold bg-yellow-100 text-yellow-700 border border-yellow-200 rounded-md">Follow-up</span>;
-      case 'converted': return <span className="px-2 py-0.5 text-[10px] font-bold bg-green-100 text-green-700 border border-green-200 rounded-md">Converted</span>;
-      case 'not_interested': return <span className="px-2 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 border border-red-200 rounded-md">Not Interested</span>;
-      default: return <span className="px-2 py-0.5 text-[10px] font-bold bg-blue-100 text-blue-700 border border-blue-200 rounded-md">Lead</span>;
+      case 'follow_up': return <span className={`${base} bg-yellow-50 text-yellow-700 border-yellow-200/60`}>🟡 Follow-up</span>;
+      case 'converted': return <span className={`${base} bg-emerald-50 text-emerald-700 border-emerald-200/60`}>🟢 Converted</span>;
+      case 'not_interested': return <span className={`${base} bg-red-50 text-red-700 border-red-200/60`}>🔴 Closed</span>;
+      default: return <span className={`${base} bg-blue-50 text-blue-700 border-blue-200/60`}>🔵 Lead</span>;
     }
   };
 
@@ -195,8 +196,8 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                   {/* Badges */}
                   <div className="flex flex-wrap gap-1.5 mt-1.5">
                     {contact.category && (
-                      <span className="text-[10px] font-bold tracking-wider px-1.5 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded text-center">
-                        {contact.category}
+                      <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded flex items-center gap-1 bg-purple-50 text-purple-700 border border-purple-200/60">
+                        💼 {contact.category}
                       </span>
                     )}
                     {getStatusBadge(contact.status)}
@@ -285,8 +286,8 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                             <span className="text-[11px] text-slate-500 leading-tight capitalize">{contact.business_name}</span>
                           )}
                           {contact.category && (
-                            <span className="text-[9px] font-bold tracking-wider px-1.5 py-0.5 bg-purple-500/20 text-indigo-600 rounded">
-                              {contact.category}
+                            <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded flex items-center gap-1 bg-purple-50 text-purple-700 border border-purple-200/60">
+                              💼 {contact.category}
                             </span>
                           )}
                           {getStatusBadge(contact.status)}

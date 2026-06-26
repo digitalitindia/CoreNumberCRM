@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Edit2, Trash2, Copy, MessageCircle, Loader2, MoreVertical, ArrowUpDown, PhoneCall, Calendar, FileText, Search, CheckCircle2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { isToday, isThisWeek, isThisMonth, isThisYear, parseISO, format } from 'date-fns';
+import { isToday, isThisWeek, isThisMonth, isThisYear, parseISO, format, formatDistanceToNow } from 'date-fns';
 import { supabase } from '../lib/supabase';
 
 export default function ContactTable({ contacts, loading, filters, onEdit, onDelete, page = 0, itemsPerPage = 50 }) {
   const [sortConfig, setSortConfig] = useState({ key: 'created_at', direction: 'desc' });
   const [whatsappTemplate, setWhatsappTemplate] = useState('Hi {name}, ');
   const [localMessageCounts, setLocalMessageCounts] = useState({});
+  const [localLastMessagedAt, setLocalLastMessagedAt] = useState({});
 
   useEffect(() => {
     const fetchWaTemplate = async () => {
@@ -42,15 +43,17 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
     window.open(`https://wa.me/91${number}?text=${text}`, '_blank');
     
     if (contactId) {
+      const now = new Date().toISOString();
       const newCount = (localMessageCounts[contactId] !== undefined ? localMessageCounts[contactId] : currentCount) + 1;
       setLocalMessageCounts(prev => ({ ...prev, [contactId]: newCount }));
+      setLocalLastMessagedAt(prev => ({ ...prev, [contactId]: now }));
       
       try {
         await supabase
           .from('contacts')
           .update({ 
             messages_sent: newCount,
-            last_messaged_at: new Date().toISOString()
+            last_messaged_at: now
           })
           .eq('id', contactId);
       } catch (e) {
@@ -178,6 +181,8 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
           const avatarLetter = (displayName.charAt(0) || 'U').toUpperCase();
           const serialNo = page * itemsPerPage + index + 1;
           const sentCount = localMessageCounts[contact.id] !== undefined ? localMessageCounts[contact.id] : (contact.messages_sent || 0);
+          const lastMessaged = localLastMessagedAt[contact.id] !== undefined ? localLastMessagedAt[contact.id] : contact.last_messaged_at;
+          const timeAgo = lastMessaged ? `${format(parseISO(lastMessaged), 'dd MMM yyyy')} (${formatDistanceToNow(parseISO(lastMessaged), { addSuffix: true })})` : '';
           return (
             <div key={contact.id} className={`animate-fade-in-up p-3 active:bg-slate-100 transition-colors border-b border-slate-200/50 last:border-0 hover:bg-indigo-50/50 ${sentCount > 0 ? 'bg-green-50/80' : 'even:bg-slate-50/60'}`}>
               <div className="flex gap-3 relative pb-1">
@@ -200,7 +205,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                     <div className="flex flex-col min-w-0 pr-2">
                       <h3 className="font-bold text-slate-900 text-[15px] truncate capitalize flex items-center gap-1.5" title={displayName}>
                         {displayName}
-                        {sentCount > 0 && <span className="flex items-center gap-1 text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full"><CheckCircle2 className="w-3 h-3" /> Sent: {sentCount}</span>}
+                        {sentCount > 0 && <span title={timeAgo ? `Last sent: ${timeAgo}` : ''} className="flex items-center gap-1 text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full cursor-help"><CheckCircle2 className="w-3 h-3" /> Sent: {sentCount}</span>}
                       </h3>
                       {contact.business_name && contact.person_name && (
                         <span className="text-[12px] text-slate-500 font-medium truncate capitalize" title={contact.business_name}>
@@ -288,6 +293,8 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
               const avatarLetter = (displayName.charAt(0) || 'U').toUpperCase();
               const serialNo = page * itemsPerPage + index + 1;
               const sentCount = localMessageCounts[contact.id] !== undefined ? localMessageCounts[contact.id] : (contact.messages_sent || 0);
+              const lastMessaged = localLastMessagedAt[contact.id] !== undefined ? localLastMessagedAt[contact.id] : contact.last_messaged_at;
+              const timeAgo = lastMessaged ? `${format(parseISO(lastMessaged), 'dd MMM yyyy')} (${formatDistanceToNow(parseISO(lastMessaged), { addSuffix: true })})` : '';
               return (
                 <tr key={contact.id} className={`animate-fade-in-up transition-colors group cursor-default ${sentCount > 0 ? 'bg-green-50/80 hover:bg-green-100/80' : 'even:bg-slate-50/60 hover:bg-indigo-50/60'}`} style={{ animationDelay: `${index * 50}ms` }}>
                   <td className="px-3 py-1.5 whitespace-nowrap text-center">
@@ -303,7 +310,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                       <div className="flex flex-col">
                         <span className="font-medium text-slate-800 text-sm leading-tight capitalize flex items-center gap-1.5">
                           {displayName}
-                          {sentCount > 0 && <span className="flex items-center gap-1 text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full"><CheckCircle2 className="w-3 h-3" /> Sent: {sentCount}</span>}
+                          {sentCount > 0 && <span title={timeAgo ? `Last sent: ${timeAgo}` : ''} className="flex items-center gap-1 text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full cursor-help"><CheckCircle2 className="w-3 h-3" /> Sent: {sentCount}</span>}
                         </span>
                         <div className="flex items-center gap-1.5 mt-0.5">
                           {contact.business_name && contact.person_name && (

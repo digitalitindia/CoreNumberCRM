@@ -205,7 +205,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                     <div className="flex flex-col min-w-0 pr-2">
                       <h3 className="font-bold text-slate-900 text-[15px] truncate capitalize flex items-center gap-1.5" title={displayName}>
                         {displayName}
-                        {sentCount > 0 && <span title={timeAgo ? `Last sent: ${timeAgo}` : ''} className="flex items-center gap-1 text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full cursor-help"><CheckCircle2 className="w-3 h-3" /> Sent: {sentCount}</span>}
+                        {sentCount > 0 && <span title={timeAgo ? `Last sent: ${timeAgo}` : 'Last sent: Date not recorded'} className="flex items-center gap-1 text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full cursor-help"><CheckCircle2 className="w-3 h-3" /> Sent: {sentCount}</span>}
                       </h3>
                       {contact.business_name && contact.person_name && (
                         <span className="text-[12px] text-slate-500 font-medium truncate capitalize" title={contact.business_name}>
@@ -310,7 +310,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                       <div className="flex flex-col">
                         <span className="font-medium text-slate-800 text-sm leading-tight capitalize flex items-center gap-1.5">
                           {displayName}
-                          {sentCount > 0 && <span title={timeAgo ? `Last sent: ${timeAgo}` : ''} className="flex items-center gap-1 text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full cursor-help"><CheckCircle2 className="w-3 h-3" /> Sent: {sentCount}</span>}
+                          {sentCount > 0 && <span title={timeAgo ? `Last sent: ${timeAgo}` : 'Last sent: Date not recorded'} className="flex items-center gap-1 text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full cursor-help"><CheckCircle2 className="w-3 h-3" /> Sent: {sentCount}</span>}
                         </span>
                         <div className="flex items-center gap-1.5 mt-0.5">
                           {contact.business_name && contact.person_name && (

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Edit2, Trash2, Copy, MessageCircle, Loader2, MoreVertical, ArrowUpDown, PhoneCall, Calendar, FileText, Search } from 'lucide-react';
+import { Edit2, Trash2, Copy, MessageCircle, Loader2, MoreVertical, ArrowUpDown, PhoneCall, Calendar, FileText, Search, CheckCircle2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { isToday, isThisWeek, isThisMonth, isThisYear, parseISO, format } from 'date-fns';
 import { supabase } from '../lib/supabase';
@@ -7,6 +7,21 @@ import { supabase } from '../lib/supabase';
 export default function ContactTable({ contacts, loading, filters, onEdit, onDelete, page = 0, itemsPerPage = 50 }) {
   const [sortConfig, setSortConfig] = useState({ key: 'created_at', direction: 'desc' });
   const [whatsappTemplate, setWhatsappTemplate] = useState('Hi {name}, ');
+  const [waSentContacts, setWaSentContacts] = useState(() => {
+    try {
+      const saved = localStorage.getItem('waSentContacts');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const todayStr = format(new Date(), 'yyyy-MM-dd');
+        const valid = {};
+        for (const [id, dateStr] of Object.entries(parsed)) {
+          if (dateStr === todayStr) valid[id] = dateStr;
+        }
+        return valid;
+      }
+    } catch (e) {}
+    return {};
+  });
 
   useEffect(() => {
     const fetchWaTemplate = async () => {
@@ -33,12 +48,19 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
     toast.success('Number copied to clipboard');
   };
 
-  const handleWhatsApp = (number, name, business) => {
+  const handleWhatsApp = (number, name, business, contactId) => {
     let finalMsg = whatsappTemplate
       .replace(/\{name\}/gi, name || '')
       .replace(/\{business\}/gi, business || '');
     const text = encodeURIComponent(finalMsg);
     window.open(`https://wa.me/91${number}?text=${text}`, '_blank');
+    
+    if (contactId) {
+      const todayStr = format(new Date(), 'yyyy-MM-dd');
+      const newSent = { ...waSentContacts, [contactId]: todayStr };
+      setWaSentContacts(newSent);
+      localStorage.setItem('waSentContacts', JSON.stringify(newSent));
+    }
   };
 
   const getStatusBadge = (status) => {
@@ -160,7 +182,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
           const avatarLetter = (displayName.charAt(0) || 'U').toUpperCase();
           const serialNo = page * itemsPerPage + index + 1;
           return (
-            <div key={contact.id} className="animate-fade-in-up p-3 active:bg-slate-100 transition-colors border-b border-slate-200/50 last:border-0 hover:bg-indigo-50/50 even:bg-slate-50/60">
+            <div key={contact.id} className={`animate-fade-in-up p-3 active:bg-slate-100 transition-colors border-b border-slate-200/50 last:border-0 hover:bg-indigo-50/50 ${waSentContacts[contact.id] ? 'bg-green-50/80' : 'even:bg-slate-50/60'}`}>
               <div className="flex gap-3 relative pb-1">
                 {/* Left Column: Avatar & Serial */}
                 <div className="flex flex-col items-center gap-2 mt-1 shrink-0">
@@ -179,8 +201,9 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                   {/* Name and Menu Button */}
                   <div className="flex justify-between items-start">
                     <div className="flex flex-col min-w-0 pr-2">
-                      <h3 className="font-bold text-slate-900 text-[15px] truncate capitalize" title={displayName}>
+                      <h3 className="font-bold text-slate-900 text-[15px] truncate capitalize flex items-center gap-1.5" title={displayName}>
                         {displayName}
+                        {waSentContacts[contact.id] && <CheckCircle2 className="w-4 h-4 text-green-500" title="WhatsApp Sent Today" />}
                       </h3>
                       {contact.business_name && contact.person_name && (
                         <span className="text-[12px] text-slate-500 font-medium truncate capitalize" title={contact.business_name}>
@@ -226,7 +249,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                       <a href={`tel:+91${contact.mobile_number}`} className="flex-1 flex justify-center items-center gap-1 p-2 bg-blue-50 hover:bg-blue-100 rounded-lg text-blue-600 transition-colors text-[12px] font-bold shadow-sm" title="Call">
                         <PhoneCall className="w-3.5 h-3.5" /> Call
                       </a>
-                      <button onClick={() => handleWhatsApp(contact.mobile_number, displayName, contact.business_name)} className="flex-1 flex justify-center items-center gap-1 p-2 bg-green-50 hover:bg-green-100 rounded-lg text-green-600 transition-colors text-[12px] font-bold shadow-sm" title="WhatsApp">
+                      <button onClick={() => handleWhatsApp(contact.mobile_number, displayName, contact.business_name, contact.id)} className="flex-1 flex justify-center items-center gap-1 p-2 bg-green-50 hover:bg-green-100 rounded-lg text-green-600 transition-colors text-[12px] font-bold shadow-sm" title="WhatsApp">
                         <MessageCircle className="w-3.5 h-3.5" /> Chat
                       </button>
                       <button onClick={() => handleCopy(contact.mobile_number)} className="p-2 px-3 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600 transition-colors shadow-sm" title="Copy">
@@ -268,7 +291,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
               const avatarLetter = (displayName.charAt(0) || 'U').toUpperCase();
               const serialNo = page * itemsPerPage + index + 1;
               return (
-                <tr key={contact.id} className="animate-fade-in-up even:bg-slate-50/60 hover:bg-indigo-50/60 transition-colors group cursor-default" style={{ animationDelay: `${index * 50}ms` }}>
+                <tr key={contact.id} className={`animate-fade-in-up transition-colors group cursor-default ${waSentContacts[contact.id] ? 'bg-green-50/80 hover:bg-green-100/80' : 'even:bg-slate-50/60 hover:bg-indigo-50/60'}`} style={{ animationDelay: `${index * 50}ms` }}>
                   <td className="px-3 py-1.5 whitespace-nowrap text-center">
                     <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
                       {serialNo}
@@ -280,7 +303,10 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                         {avatarLetter}
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-medium text-slate-800 text-sm leading-tight capitalize">{displayName}</span>
+                        <span className="font-medium text-slate-800 text-sm leading-tight capitalize flex items-center gap-1.5">
+                          {displayName}
+                          {waSentContacts[contact.id] && <CheckCircle2 className="w-3.5 h-3.5 text-green-500" title="WhatsApp Sent Today" />}
+                        </span>
                         <div className="flex items-center gap-1.5 mt-0.5">
                           {contact.business_name && contact.person_name && (
                             <span className="text-[10px] text-slate-500 leading-tight capitalize">{contact.business_name}</span>
@@ -305,7 +331,7 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                         <button onClick={() => handleCopy(contact.mobile_number)} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded text-slate-600 transition-colors" title="Copy">
                           <Copy className="w-3.5 h-3.5" />
                         </button>
-                        <button onClick={() => handleWhatsApp(contact.mobile_number, displayName, contact.business_name)} className="p-1.5 bg-green-50 hover:bg-green-100 rounded text-green-600 transition-colors" title="WhatsApp">
+                        <button onClick={() => handleWhatsApp(contact.mobile_number, displayName, contact.business_name, contact.id)} className="p-1.5 bg-green-50 hover:bg-green-100 rounded text-green-600 transition-colors" title="WhatsApp">
                           <MessageCircle className="w-3.5 h-3.5" />
                         </button>
                       </div>

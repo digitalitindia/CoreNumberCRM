@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Edit2, Trash2, Copy, MessageCircle, Loader2, MoreVertical, ArrowUpDown, PhoneCall, Calendar, FileText, Search, CheckCircle2 } from 'lucide-react';
+import { Edit2, Trash2, Copy, MessageCircle, Loader2, MoreVertical, ArrowUpDown, PhoneCall, Calendar, FileText, Search, CheckCircle2, RefreshCw } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { isToday, isThisWeek, isThisMonth, isThisYear, parseISO, format, formatDistanceToNow } from 'date-fns';
 import { supabase } from '../lib/supabase';
@@ -59,6 +59,25 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
       } catch (e) {
         console.error('Failed to update message count:', e);
       }
+    }
+  };
+
+  const handleResetRow = async (contactId) => {
+    try {
+      setLocalMessageCounts(prev => ({ ...prev, [contactId]: 0 }));
+      setLocalLastMessagedAt(prev => ({ ...prev, [contactId]: null }));
+      
+      await supabase
+        .from('contacts')
+        .update({ 
+          messages_sent: 0,
+          last_messaged_at: null
+        })
+        .eq('id', contactId);
+      toast.success('Sent count cleared for this contact');
+    } catch (e) {
+      console.error('Failed to reset message count:', e);
+      toast.error('Failed to clear count');
     }
   };
 
@@ -266,6 +285,11 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                       <button onClick={() => handleCopy(contact.mobile_number)} className="p-2 px-3 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600 transition-colors shadow-sm" title="Copy">
                         <Copy className="w-3.5 h-3.5" />
                       </button>
+                      {sentCount > 0 && (
+                        <button onClick={() => handleResetRow(contact.id)} className="p-2 px-3 bg-amber-50 hover:bg-amber-100 rounded-lg text-amber-600 transition-colors shadow-sm" title="Clear Sent">
+                          <RefreshCw className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                   </div>
                 </div>
               </div>
@@ -357,6 +381,11 @@ export default function ContactTable({ contacts, loading, filters, onEdit, onDel
                         <button onClick={() => handleWhatsApp(contact.mobile_number, displayName, contact.business_name, contact.id, contact.messages_sent || 0)} className="p-1.5 bg-green-50 hover:bg-green-100 rounded text-green-600 transition-colors" title="WhatsApp">
                           <MessageCircle className="w-3.5 h-3.5" />
                         </button>
+                        {sentCount > 0 && (
+                          <button onClick={() => handleResetRow(contact.id)} className="p-1.5 bg-amber-50 hover:bg-amber-100 rounded text-amber-600 transition-colors" title="Clear Sent">
+                            <RefreshCw className="w-3.5 h-3.5" />
+                          </button>
+                        )}
                       </div>
                     </div>
                   </td>

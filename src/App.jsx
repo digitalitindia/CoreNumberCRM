@@ -4,7 +4,7 @@ import ContactForm from './components/ContactForm';
 import ContactTable from './components/ContactTable';
 import Filters from './components/Filters';
 import BulkImportModal from './components/BulkImportModal';
-import { Plus, Search, LogOut, Users, Settings, Upload, Download, AlertCircle, ChevronLeft, ChevronRight, Phone, CheckCircle, Database, Calendar, PanelLeft } from 'lucide-react';
+import { Plus, Search, LogOut, Users, Settings, Upload, Download, AlertCircle, ChevronLeft, ChevronRight, Phone, CheckCircle, Database, Calendar, PanelLeft, RefreshCw } from 'lucide-react';
 import { toast, Toaster } from 'react-hot-toast';
 import * as XLSX from 'xlsx';
 import { isToday, isThisWeek, isThisMonth, isThisYear, parseISO } from 'date-fns';
@@ -130,6 +130,25 @@ export default function App() {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Filtered_Contacts");
     XLSX.writeFile(workbook, `Contacts_Export_${new Date().toISOString().split('T')[0]}.xlsx`);
     toast.success(`Exported ${filtered.length} records`);
+  };
+
+  const handleBulkReset = async () => {
+    if (window.confirm('Are you sure you want to reset the sent message counts for all contacts?')) {
+      setLoading(true);
+      try {
+        const { error } = await supabase
+          .from('contacts')
+          .update({ messages_sent: 0, last_messaged_at: null })
+          .gt('messages_sent', 0);
+        if (error) throw error;
+        toast.success('Sent message counts have been reset');
+        fetchContacts();
+      } catch (err) {
+        console.error(err);
+        toast.error('Failed to reset sent counts');
+        setLoading(false);
+      }
+    }
   };
 
   const fetchContacts = useCallback(async () => {
@@ -462,6 +481,10 @@ export default function App() {
               )}
 
               <div className="flex gap-2 flex-1 sm:flex-none">
+                <button onClick={handleBulkReset} className="flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-bold bg-amber-50 text-amber-700 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors shadow-sm flex-1 sm:flex-none" title="Reset All Sent Messages">
+                  <RefreshCw className="w-4 h-4" />
+                  <span className="hidden sm:inline">Reset Sent</span>
+                </button>
                 <button onClick={handleExport} className="flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg hover:bg-emerald-100 transition-colors shadow-sm flex-1 sm:flex-none">
                   <Download className="w-4 h-4" />
                   <span>Export</span>
